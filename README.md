@@ -1,9 +1,9 @@
 # Final-Work-Programming-II
-Trabalho final de programação 2
-UESPI - Universidade Estadual do Piauí
-CTU - Centro de Tecnologia e Urbanismo
-Disciplina: Programação II
-Prof: Msc Constantino Augusto Dias Neto
+ Trabalho final de programação 2 <br/>
+ UESPI - Universidade Estadual do Piauí <br/>
+CTU - Centro de Tecnologia e Urbanismo <br/>
+Disciplina: Programação II <br/>
+Prof: Msc Constantino Augusto Dias Neto <br/>
 
 #  Trabalho Final
 
@@ -36,8 +36,6 @@ deve ser do tipo date e armazenar no nosso formato dd/mm/yyyy, telefone, CPF,. D
 - a) Domínio do conteúdo (1,5 pontos).
 - b) Clareza na exposição das idéias (1,5 pontos).
 
- **OBS: Esse trabalho valerá a terceira nota 10,0. O trabalho pode ser feito em equipe de no máximo dois integrantes.**
- 
- **OBS: Os trabalhos que forem copias de outros, terá a nota automaticamente 0,0.**
- 
+ **OBS: Esse trabalho valerá a terceira nota 10,0. O trabalho pode ser feito em equipe de no máximo dois integrantes.**<br/> 
+ **OBS: Os trabalhos que forem copias de outros, terá a nota automaticamente 0,0.**<br/> 
  **OBS: É obrigatório uso do Swing ou Java FX. Use formulários, menus, caixa de mensagens, confirmação,caixa de entrada de dados etc. Quando mais recurso utilizar melhor.**

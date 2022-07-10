@@ -3,6 +3,23 @@ package br.uespi.cadastroaluno.model;
 import java.util.Date;
 //Dever ser o Date
 public class Aluno {
+	
+	
+	
+	public Aluno(int matricula, String nome, int idade, Date dataNascimento, String telefone, String CPF) {
+		this.matricula = matricula;
+		this.nome = nome;
+		this.idade = idade;
+		this.dataNascimento = dataNascimento;
+		this.telefone = telefone;
+		this.CPF = CPF;
+	}
+	
+	public Aluno() {
+		
+	}
+	
+	
 	private int matricula;
 	public int getMatricula() {
 		return matricula;
@@ -28,21 +45,21 @@ public class Aluno {
 	public void setDataNascimento(Date dataNascimento) {
 		this.dataNascimento = dataNascimento;
 	}
-	public int getTelefone() {
+	public String getTelefone() {
 		return telefone;
 	}
-	public void setTelefone(int telefone) {
+	public void setTelefone(String telefone) {
 		this.telefone = telefone;
 	}
-	public int getCPF() {
+	public String getCPF() {
 		return CPF;
 	}
-	public void setCPF(int cPF) {
+	public void setCPF(String cPF) {
 		CPF = cPF;
 	}
 	private String nome;
 	private int idade;	
 	private Date dataNascimento;
-	private int telefone;
-	private int CPF;	
+	private String telefone;
+	private String CPF;	
 }

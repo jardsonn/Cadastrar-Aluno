@@ -1,229 +1,386 @@
 package br.uespi.cadastroaluno.ui;
 
-import java.awt.EventQueue;
-
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.Insets;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DateTimeException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import javax.swing.SwingConstants;
-import javax.swing.text.MaskFormatter;
+
+import br.uespi.cadastroaluno.model.Aluno;
+import br.uespi.cadastroaluno.utils.FormUtil;
+
 import javax.swing.JToolBar;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.ImageIcon;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
+public class TelaDeCadastro extends JPanel implements ActionListener {
 
-public class TelaDeCadastro {
+	private static final long serialVersionUID = 2L;
 
-	private JFrame frame;
+	private static final String NAME_NOME = "nome";
+	private static final String NAME_SOBRENOME = "sobrenome";
+	private static final String NAME_MATRICULA = "matrícula";
+	private static final String NAME_DATA_NASCIMENTO = "data de nascimento";
+	private static final String NAME_TELEFONE = "telefone";
+	private static final String NAME_CPF = "CPF";
+
 	private JFormattedTextField editMatricula;
-	private JTextField editNome;
-	private JTextField editSobrenome;
-	private JFormattedTextField editData;
-	private JLabel lblNewLabel_2;
 	private JFormattedTextField editCPF;
 	private JFormattedTextField editTelefone;
+	private JFormattedTextField editData;
+	private JTextField editNome;
+	private JTextField editSobrenome;
 	private JButton btnVoltar;
+	private JButton btnCadastrar;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					TelaDeCadastro window = new TelaDeCadastro();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	private final JMainFrame frame;
 
-	/**
-	 * Create the application.
-	 */
-	public TelaDeCadastro() {
+	private List<Aluno> alunoList;
+
+	public TelaDeCadastro(JMainFrame frame) {
+		this.frame = frame;
+		alunoList = new ArrayList<>();
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
-
-	private MaskFormatter cpfFormat() {
-		MaskFormatter mask = null;
-		try {
-			mask = new MaskFormatter("###.###.###-##");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return mask;
-	}
-
-	private MaskFormatter phoneNumberFormat() {
-		MaskFormatter mask = null;
-		try {
-			mask = new MaskFormatter("(##) # ####-####");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return mask;
-	}
-
-	private MaskFormatter registrationNumberFormat() {
-		MaskFormatter mask = null;
-		try {
-			mask = new MaskFormatter("#######");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return mask;
-	}
-
-	private MaskFormatter dateNumberFormat() {
-		MaskFormatter mask = null;
-		try {
-			mask = new MaskFormatter("##/##/####");
-		} catch (ParseException e) {
-			e.printStackTrace();
-		}
-
-		return mask;
-	}
-
 	private void initialize() {
-		frame = new JFrame();
-		frame.getContentPane().setFont(new Font("Open Sans", Font.PLAIN, 12));
-		frame.setBounds(100, 100, 530, 442);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		setLayout(null);
+		JToolBar toolbar = new JToolBar();
+		toolbar.setBounds(0, 0, 587, 60);
+		toolbar.setFloatable(false);
+		toolbar.setBackground(new Color(255, 0, 51));
+		toolbar.setBorder(FormUtil.getBorder(toolbar));
+
+		JLabel textTitle = new JLabel("CADASTRAR ALUNO");
+		textTitle.setForeground(new Color(255, 255, 255));
+		textTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		textTitle.setFont(new Font("Open Sans", Font.BOLD, 16));
+		toolbar.add(textTitle);
+		add(toolbar);
 
 		JLabel labelMatricula = new JLabel("Matrícula:");
-		labelMatricula.setFont(new Font("Open Sans", Font.BOLD, 12));
-		labelMatricula.setBounds(10, 79, 78, 14);
-		frame.getContentPane().add(labelMatricula);
+		labelMatricula.setBounds(10, 113, 126, 17);
+		labelMatricula.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(labelMatricula);
 
-		editMatricula = new JFormattedTextField(registrationNumberFormat());
-		editMatricula.setFont(new Font("Open Sans", Font.PLAIN, 12));
+		editMatricula = new JFormattedTextField();
+		editMatricula.setName(NAME_MATRICULA);
+		editMatricula.setBounds(10, 133, 126, 33);
+		FormUtil.registrationNumberFormat(editMatricula);
+		editMatricula.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		labelMatricula.setLabelFor(editMatricula);
-		editMatricula.setBounds(10, 96, 127, 30);
 		editMatricula.setColumns(10);
-		editMatricula.setBorder(BorderFactory.createCompoundBorder(editMatricula.getBorder(),
-				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		frame.getContentPane().add(editMatricula);
+		editMatricula.setBorder(FormUtil.getBorder(editMatricula));
+		add(editMatricula);
 
 		JLabel labelNome = new JLabel("Nome:");
-		labelNome.setFont(new Font("Open Sans", Font.BOLD, 12));
-		labelNome.setBounds(10, 141, 46, 14);
-		frame.getContentPane().add(labelNome);
+		labelNome.setBounds(10, 183, 280, 17);
+		labelNome.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(labelNome);
 
 		editNome = new JTextField();
-		editNome.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		editNome.setBounds(10, 159, 241, 30);
+		FormUtil.formatName(editNome);
+		editNome.setName(NAME_NOME);
+		editNome.setBounds(10, 203, 280, 30);
+		editNome.setFont(new Font("Open Sans", Font.PLAIN, 14));
 		editNome.setColumns(10);
-		editNome.setBorder(
-				BorderFactory.createCompoundBorder(editNome.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		frame.getContentPane().add(editNome);
-
-		editSobrenome = new JTextField();
-		editSobrenome.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		editSobrenome.setBounds(261, 159, 243, 30);
-		editSobrenome.setColumns(10);
-		editSobrenome.setBorder(BorderFactory.createCompoundBorder(editSobrenome.getBorder(),
-				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		frame.getContentPane().add(editSobrenome);
+		editNome.setBorder(FormUtil.getBorder(editNome));
+		add(editNome);
 
 		JLabel lblNewLabel_1 = new JLabel("Sobrenome:");
-		lblNewLabel_1.setFont(new Font("Open Sans", Font.BOLD, 12));
-		lblNewLabel_1.setBounds(261, 141, 243, 14);
-		frame.getContentPane().add(lblNewLabel_1);
+		lblNewLabel_1.setBounds(297, 183, 280, 17);
+		lblNewLabel_1.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(lblNewLabel_1);
 
-		JLabel lblNewLabel = new JLabel("Data de nascimento:");
-		lblNewLabel.setFont(new Font("Open Sans", Font.BOLD, 12));
-		lblNewLabel.setBounds(10, 202, 127, 14);
-		frame.getContentPane().add(lblNewLabel);
-
-		editData = new JFormattedTextField(dateNumberFormat());
-		editData.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		editData.setColumns(10);
-		editData.setBounds(10, 219, 150, 30);
-		editData.setBorder(
-				BorderFactory.createCompoundBorder(editData.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		frame.getContentPane().add(editData);
-
-		lblNewLabel_2 = new JLabel("CPF:");
-		lblNewLabel_2.setFont(new Font("Open Sans", Font.BOLD, 12));
-		lblNewLabel_2.setBounds(300, 79, 204, 14);
-		frame.getContentPane().add(lblNewLabel_2);
-
-		editCPF = new JFormattedTextField(cpfFormat());
-		editCPF.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		editCPF.setBounds(300, 96, 204, 30);
-		editCPF.setBorder(
-				BorderFactory.createCompoundBorder(editCPF.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		editCPF.setColumns(10);
-		frame.getContentPane().add(editCPF);
-
-		editTelefone = new JFormattedTextField(phoneNumberFormat());
-		editTelefone.setFont(new Font("Open Sans", Font.PLAIN, 12));
-		editTelefone.setColumns(10);
-		editTelefone.setBounds(147, 96, 143, 30);
-		editTelefone.setBorder(BorderFactory.createCompoundBorder(editTelefone.getBorder(),
-				BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		frame.getContentPane().add(editTelefone);
+		editSobrenome = new JTextField();
+		FormUtil.formatName(editSobrenome);
+		editSobrenome.setName(NAME_SOBRENOME);
+		editSobrenome.setBounds(297, 203, 280, 30);
+		editSobrenome.setFont(new Font("Open Sans", Font.PLAIN, 14));
+		editSobrenome.setColumns(10);
+		editSobrenome.setBorder(FormUtil.getBorder(editSobrenome));
+		add(editSobrenome);
 
 		JLabel lblNewLabel_1_1 = new JLabel("Telefone:");
-		lblNewLabel_1_1.setFont(new Font("Open Sans", Font.BOLD, 12));
-		lblNewLabel_1_1.setBounds(150, 79, 66, 14);
-		frame.getContentPane().add(lblNewLabel_1_1);
+		lblNewLabel_1_1.setBounds(10, 253, 126, 17);
+		lblNewLabel_1_1.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(lblNewLabel_1_1);
 
-		JButton btnCadastrar = new JButton("Cadastrar");
+		editTelefone = new JFormattedTextField(FormUtil.phoneNumberFormat());
+		editTelefone.setName(NAME_TELEFONE);
+		editTelefone.setBounds(10, 273, 150, 33);
+		editTelefone.setFont(new Font("Open Sans", Font.PLAIN, 14));
+		editTelefone.setColumns(10);
+		editTelefone.setBorder(FormUtil.getBorder(editTelefone));
+		add(editTelefone);
+
+		JLabel lblNewLabel = new JLabel("Data de nascimento:");
+		lblNewLabel.setBounds(220, 253, 145, 17);
+		lblNewLabel.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(lblNewLabel);
+
+		editData = new JFormattedTextField(FormUtil.dateNumberFormat());
+		editData.setName(NAME_DATA_NASCIMENTO);
+		editData.setHorizontalAlignment(SwingConstants.CENTER);
+		editData.setBounds(220, 273, 150, 33);
+		editData.setFont(new Font("Open Sans", Font.PLAIN, 14));
+		editData.setColumns(10);
+		editData.setBorder(FormUtil.getBorder(editData));
+		add(editData);
+
+		JLabel lblNewLabel_2 = new JLabel("CPF:");
+		lblNewLabel_2.setBounds(427, 253, 126, 17);
+		lblNewLabel_2.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(lblNewLabel_2);
+
+		editCPF = new JFormattedTextField(FormUtil.cpfFormat());
+		editCPF.setName(NAME_CPF);
+		editCPF.setBounds(427, 273, 150, 33);
+		editCPF.setFont(new Font("Open Sans", Font.PLAIN, 14));
+		editCPF.setBorder(FormUtil.getBorder(editCPF));
+		editCPF.setColumns(10);
+		add(editCPF);
+
+		btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.setBounds(236, 423, 150, 30);
 		btnCadastrar.setFocusPainted(false);
 		btnCadastrar.setBackground(new Color(255, 0, 51));
 		btnCadastrar.setForeground(new Color(255, 255, 255));
-		btnCadastrar.setFont(new Font("Open Sans", Font.BOLD, 12));
-		btnCadastrar.setBounds(171, 299, 171, 36);
-		frame.getContentPane().add(btnCadastrar);
+		btnCadastrar.setFont(new Font("Open Sans", Font.BOLD, 14));
+		add(btnCadastrar);
 
-		JToolBar toolBar = new JToolBar();
-		toolBar.setFloatable(false);
-		toolBar.setBackground(new Color(255, 0, 51));
-		toolBar.setBounds(0, 0, 514, 27);
-		toolBar.setBorder(
-				BorderFactory.createCompoundBorder(toolBar.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5)));
-		frame.getContentPane().add(toolBar);
-
-		JLabel lblNewLabel_3 = new JLabel("CADASTRAR ALUNO");
-		lblNewLabel_3.setForeground(new Color(255, 255, 255));
-		toolBar.add(lblNewLabel_3);
-		lblNewLabel_3.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_3.setFont(new Font("Open Sans", Font.BOLD, 14));
-		
 		btnVoltar = new JButton("Voltar");
+		btnVoltar.setBounds(236, 463, 150, 30);
 		btnVoltar.setForeground(new Color(51, 51, 51));
-		btnVoltar.setFont(new Font("Open Sans", Font.BOLD, 12));
+		btnVoltar.setFont(new Font("Open Sans", Font.BOLD, 14));
 		btnVoltar.setFocusPainted(false);
 		btnVoltar.setBackground(new Color(255, 255, 255));
-		btnVoltar.setBounds(171, 346, 171, 36);
-		frame.getContentPane().add(btnVoltar);
+		add(btnVoltar);
 
+		btnVoltar.addActionListener(this);
+		btnCadastrar.addActionListener(this);
+	}
+
+	private void clearText() {
+		Component[] components = getComponents();
+		for (Component component : components) {
+			if (component instanceof JTextField) {
+				((JTextField) component).setText(null);
+			}
+			
+			if (component instanceof JFormattedTextField) {
+				((JFormattedTextField) component).setValue(null);
+			}
+			
+		}
+
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (e.getSource() == btnCadastrar) {
+			if (isDataValid()) {
+				cadastrarAluno();
+			}
+		} else if (e.getSource() == btnVoltar) {
+			setVisible(false);
+		}
+	}
+
+	private void cadastrarAluno() {
+		int matricula = Integer.parseInt(editMatricula.getText());
+		String nome = editNome.getText();
+		String sobrenome = editSobrenome.getText();
+		String telefone = editTelefone.getText();
+		String cpf = editCPF.getText();
+		String dataNascimento = editData.getText();
+
+		Aluno aluno = new Aluno(matricula, nome.concat(" ").concat(sobrenome), (int) getIdade(dataNascimento),
+				dateParse(dataNascimento), telefone, cpf);
+
+		addAluno(aluno);
+		System.out.println(frame.getAlunoList().size());
+		clearText();
+	}
+
+	private void addAluno(Aluno aluno) {
+		alunoList.add(aluno);
+		frame.setAlunoList(alunoList);
+	}
+
+	private Date dateParse(String date) {
+		try {
+			return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private long getIdade(String dataNascimento) {
+		String[] dataIdade = dataNascimento.split("/");
+
+		int diaIdade = Integer.parseInt(dataIdade[0]);
+		int mesIdade = Integer.parseInt(dataIdade[1]);
+		int anoIdade = Integer.parseInt(dataIdade[2]);
+
+		LocalDate start = LocalDate.of(anoIdade, mesIdade, diaIdade);
+		LocalDate end = LocalDate.now();
+
+		long anos = ChronoUnit.YEARS.between(start, end);
+
+		return anos;
+	}
+
+	private boolean matriculaExistente(String matricula) {
+		// Percorre a lista de alunos e retorna uma lista de matriculas
+		List<Integer> matriculas = alunoList.stream().map((aluno) -> aluno.getMatricula()).collect(Collectors.toList());
+		for (int m : matriculas) {
+			if (m == Integer.parseInt(matricula)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean cpfExistente(String cpf) {
+		// Percorre a lista de alunos e retorna uma lista de cpf
+		List<String> matriculas = alunoList.stream().map((aluno) -> aluno.getCPF()).collect(Collectors.toList());
+		for (String c : matriculas) {
+			if (c.equals(cpf)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	private boolean isDataValid() {
+		boolean isValid = true;
+		boolean isEmpty = true;
+		Component[] components = getComponents();
+		for (Component component : components) {
+			if (component instanceof JTextField) {
+				JTextField field = ((JTextField) component);
+				String text = field.getText().trim();
+				switch (field.getName()) {
+				case NAME_NOME:
+					isEmpty = text.isEmpty();
+					break;
+				case NAME_SOBRENOME:
+					isEmpty = text.isEmpty();
+					break;
+				case NAME_MATRICULA:
+					boolean isMatriculaValida = text.length() == 7;
+					isEmpty = text.isEmpty();
+					if (!isMatriculaValida && !isEmpty) {
+						isValid = false;
+						showErrorMessage("Matrícula inválida", "A matrícula deve ter 7 (sete) dígitos.");
+						break;
+					}
+					if(matriculaExistente(text)) {
+						isValid = false;
+						showErrorMessage("Matrícula já cadastrada", "Essa matricula já está cadastrada. Por favor, escolha outra.");
+						break;
+					}
+					break;
+				case NAME_DATA_NASCIMENTO:
+					if (editData.getValue() == null) {
+						isValid = false;
+						showErrorMessage("Data de nascimento inválida",
+								"A data de nascimento é inválida. Por favor, use o formato dd/mm/yyyy.");
+						break;
+					} else {
+						String[] dataIdade = editData.getText().split("/");
+
+						int dia = Integer.parseInt(dataIdade[0]);
+						int mes = Integer.parseInt(dataIdade[1]);
+						int ano = Integer.parseInt(dataIdade[2]);
+
+						try {
+							LocalDate.of(ano, mes, dia);
+							isValid = true;
+						} catch (DateTimeException e) {
+							isValid = false;
+							if (e.getMessage().contains("Invalid value for MonthOfYear")) {
+								showErrorMessage("Data de nascimento inválida",
+										"O mês digitado é inválido. Por favor, digite um mês válido.");
+							} else if (e.getMessage().contains("Invalid value for Year")) {
+								showErrorMessage("Data de nascimento inválida",
+										"O ano digitado é inválido. Por favor, digite um ano válido.");
+							} else if (e.getMessage().contains("Invalid value for DayOfMonth")) {
+								showErrorMessage("Data de nascimento inválida",
+										"O dia digitado é inválido. Por favor, digite um dia válido.");
+							}
+						}
+					}
+					break;
+				case NAME_TELEFONE:
+					if (editTelefone.getValue() == null) {
+						isValid = false;
+						showErrorMessage("Número de telefone inválido",
+								"Este número de telefone é inválido. Por favor, digite novamente");
+						break;
+					}
+					break;
+				case NAME_CPF:
+					if (editCPF.getValue() == null) {
+						isValid = false;
+						showErrorMessage("CPF inválido", "Este CPF é inválido. Por favor, digite novamente");
+						break;
+					}
+					if(cpfExistente(text)) {
+						isValid = false;
+						showErrorMessage("CPF já cadastrada", "Esse CPF já está cadastrado. É possível que esse aluno já esteja matriculado nesse sistema.");
+						break;
+					}
+					break;
+				default:
+					isValid = true;
+					break;
+				}
+
+				if (!isValid) {
+					break;
+				}
+
+				if (isEmpty) {
+					isValid = false;
+					showErrorEmptyFieldMessage("O campo " + field.getName() + " é obrigatório");
+					break;
+				}
+			}
+		}
+
+		return isValid;
+	}
+
+	private void showErrorEmptyFieldMessage(String msg) {
+		showErrorMessage("Campo Obrigatório", msg);
+	}
+
+	private void showErrorMessage(String title, String msg) {
+		JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
 	}
 
 }

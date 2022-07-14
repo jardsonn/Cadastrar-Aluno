@@ -1,30 +1,36 @@
 package br.uespi.cadastroaluno.model;
 
 import java.util.Date;
-//Dever ser o Date
+
 public class Aluno {
 	
+	private String matricula;
+	private String nome;
+	private int idade;	
+	private Date dataNascimento;
+	private String telefone;
+	private String cpf;	
 	
-	
-	public Aluno(int matricula, String nome, int idade, Date dataNascimento, String telefone, String CPF) {
-		this.matricula = matricula;
-		this.nome = nome;
-		this.idade = idade;
-		this.dataNascimento = dataNascimento;
-		this.telefone = telefone;
-		this.CPF = CPF;
-	}
+	private boolean maisVelho;
+	private boolean maisNovo;
 	
 	public Aluno() {
 		
 	}
 	
-	
-	private int matricula;
-	public int getMatricula() {
+	public Aluno(String matricula, String nome, int idade, Date dataNascimento, String telefone, String cpf) {
+		this.matricula = matricula;
+		this.nome = nome;
+		this.idade = idade;
+		this.dataNascimento = dataNascimento;
+		this.telefone = telefone;
+		this.cpf = cpf;
+	}
+
+	public String getMatricula() {
 		return matricula;
 	}
-	public void setMatricula(int matricula) {
+	public void setMatricula(String matricula) {
 		this.matricula = matricula;
 	}
 	public String getNome() {
@@ -52,14 +58,42 @@ public class Aluno {
 		this.telefone = telefone;
 	}
 	public String getCPF() {
-		return CPF;
+		return cpf;
 	}
-	public void setCPF(String cPF) {
-		CPF = cPF;
+	public void setCPF(String cpf) {
+		this.cpf = cpf;
 	}
-	private String nome;
-	private int idade;	
-	private Date dataNascimento;
-	private String telefone;
-	private String CPF;	
+	
+	
+	
+	public boolean isMaisVelho() {
+		return maisVelho;
+	}
+
+	public void setMaisVelho(boolean maisVelho) {
+		this.maisVelho = maisVelho;
+	}
+
+	public boolean isMaisNovo() {
+		return maisNovo;
+	}
+
+	public void setMaisNovo(boolean maisNovo) {
+		this.maisNovo = maisNovo;
+	}
+
+	// Será mostrado na lista
+	@Override
+	public String toString() {
+		String info = "";
+		if(maisVelho) {
+			info = " (mais velho)";
+		}else if(maisNovo) {
+			info = " (mais novo)";
+		}
+		
+		return "    "+nome+info;
+		
+	}
+	
 }

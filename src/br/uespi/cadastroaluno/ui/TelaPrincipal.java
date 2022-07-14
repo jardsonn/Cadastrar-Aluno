@@ -2,24 +2,35 @@ package br.uespi.cadastroaluno.ui;
 
 import java.awt.EventQueue;
 
-public class TelaPrincipal {
+public class TelaPrincipal extends JMainFrame {
+	
+	public TelaPrincipal() {
+		try {
+			
+			TelaListaCadastrado telaListaCadastrado = new TelaListaCadastrado(this);
+			TelaDeCadastro telaCadastro = new TelaDeCadastro(this);
+			setContentPane(telaListaCadastrado);
+			setVisible(true);
+			
+			
+			telaListaCadastrado.setNewStudent(panel -> {
+				goToScreen(telaCadastro);
+			});
+			
+			telaCadastro.onBack(panel -> {
+				goToScreen(telaListaCadastrado);
+			});
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					JMainFrame mainFrame = new JMainFrame();
-					
-					TelaListaCadastrado telaListaCadastrado = new TelaListaCadastrado(mainFrame);
-					TelaDeCadastro telaCadastro = new TelaDeCadastro(mainFrame);
-
-					mainFrame.setContentPane(telaCadastro);
-					//mainFrame.setContentPane(telaListaCadastrado);
-					
-					mainFrame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				new TelaPrincipal();
 			}
 		});
 	}

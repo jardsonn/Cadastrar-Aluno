@@ -1,6 +1,14 @@
 package br.uespi.cadastroaluno.utils;
 
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -16,6 +24,8 @@ import javax.swing.text.DocumentFilter;
 import javax.swing.text.MaskFormatter;
 
 public class FormUtil {
+
+	public static final String PATTERN_FORMAT_DATE_BR = "dd 'de' MMM 'de' yyyy";
 
 	public static MaskFormatter cpfFormat() {
 		MaskFormatter mask = null;
@@ -48,7 +58,7 @@ public class FormUtil {
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
 					throws BadLocationException {
-				if(text == null) {
+				if (text == null) {
 					super.replace(fb, offset, length, "", attrs);
 					return;
 				}
@@ -90,7 +100,7 @@ public class FormUtil {
 			@Override
 			public void replace(FilterBypass fb, int offset, int length, String text, AttributeSet attrs)
 					throws BadLocationException {
-				if(text == null) {
+				if (text == null) {
 					super.replace(fb, offset, length, "", attrs);
 					return;
 				}
@@ -119,6 +129,39 @@ public class FormUtil {
 
 	public static Border getBorder(JComponent field) {
 		return BorderFactory.createCompoundBorder(field.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5));
+	}
+
+	public static Image getScaledImage(Image srcImg, int w, int h) {
+		BufferedImage resizedImg = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g2 = resizedImg.createGraphics();
+
+		g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+		g2.drawImage(srcImg, 0, 0, w, h, null);
+		g2.dispose();
+
+		return resizedImg;
+	}
+
+	public static String dateToString(Date date) {
+		Locale localeBr = new Locale("pt", "BR");
+		SimpleDateFormat sdf = new SimpleDateFormat(PATTERN_FORMAT_DATE_BR, localeBr);
+		return sdf.format(date);
+	}
+
+	public static Font getFontBold() {
+		return new Font("Verdana", Font.BOLD, 14);
+	}
+
+	public static Font getFontBold(int fontSize) {
+		return new Font("Verdana", Font.BOLD, fontSize);
+	}
+
+	public static Font getFontNormal(int fontSize) {
+		return new Font("Verdana", Font.PLAIN, fontSize);
+	}
+
+	public static Font getFontNormal() {
+		return new Font("Verdana", Font.PLAIN, 14);
 	}
 
 }

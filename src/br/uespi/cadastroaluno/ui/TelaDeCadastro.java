@@ -200,7 +200,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		btnRandomMat.setBackground(new Color(255, 255, 255));
 		btnRandomMat.setBounds(156, 133, 33, 33);
 
-		ImageIcon imgIcon = new ImageIcon("getClass().getResource(\"img/ic_ramdom.png\")");
+		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/ic_ramdom.png"));
 		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 24, 24);
 		btnRandomMat.setIcon(new ImageIcon(image));
 		btnRandomMat.setFocusPainted(false);

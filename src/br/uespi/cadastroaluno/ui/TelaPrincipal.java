@@ -2,6 +2,8 @@ package br.uespi.cadastroaluno.ui;
 
 import java.awt.EventQueue;
 
+import br.uespi.cadastroaluno.ui.components.JMainFrame;
+
 public class TelaPrincipal extends JMainFrame {
 	
 	public TelaPrincipal() {

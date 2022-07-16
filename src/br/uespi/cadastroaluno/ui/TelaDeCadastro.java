@@ -10,6 +10,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import java.awt.Font;
+import java.awt.GradientPaint;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -32,6 +35,10 @@ import javax.swing.event.ChangeListener;
 
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
+import br.uespi.cadastroaluno.ui.components.JMainFrame;
+import br.uespi.cadastroaluno.ui.components.JPanelCard;
+import br.uespi.cadastroaluno.ui.components.RoundedBorder;
+import br.uespi.cadastroaluno.ui.components.StyledButton;
 import br.uespi.cadastroaluno.utils.FormUtil;
 
 import javax.swing.JToolBar;
@@ -40,14 +47,27 @@ import javax.swing.SpinnerListModel;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.RoundRectangle2D;
+
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JScrollBar;
 import javax.swing.JCheckBox;
 import java.awt.Insets;
+import java.awt.Point;
+import java.awt.RenderingHints;
+import java.awt.Toolkit;
+
 import javax.swing.border.LineBorder;
+import javax.swing.SpringLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.FormSpecs;
+import com.jgoodies.forms.layout.RowSpec;
+import javax.swing.JProgressBar;
 
 public class TelaDeCadastro extends JPanel implements ActionListener {
 
@@ -66,11 +86,13 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 	private JFormattedTextField editData;
 	private JTextField editNome;
 	private JTextField editSobrenome;
-	private JButton btnVoltar;
-	private JButton btnCadastrar;
+	private StyledButton btnVoltar;
+	private StyledButton btnCadastrar;
 	private JCheckBox chckbxPosition;
 
 	private final JMainFrame frame;
+
+	private JPanelCard innerPanel;
 
 	// private List<Aluno> alunoList;
 
@@ -79,145 +101,168 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 	public TelaDeCadastro(JMainFrame frame) {
 		this.frame = frame;
 		// alunoList = new ArrayList<>();
+
+		JFrame jfarme = new JFrame();
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		jfarme.setBounds(0, 0, screenSize.width, screenSize.height);
+		jfarme.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		jfarme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jfarme.getContentPane().add(this);
+
 		initialize();
 	}
 
 	private void initialize() {
 		setLayout(null);
 
-		JLabel textTitle = new JLabel("CADASTRAR ALUNO");
-		textTitle.setBounds(0, 0, 720, 60);
-		textTitle.setHorizontalAlignment(SwingConstants.CENTER);
-		textTitle.setFont(FormUtil.getFontBold());
-		add(textTitle);
+		innerPanel = new JPanelCard();
+		innerPanel.setBackground(Color.WHITE);
+		innerPanel.setBounds(258, 127, 833, 466);
+		add(innerPanel);
+		innerPanel.setLayout(null);
 
 		JLabel labelMatricula = new JLabel("Matrícula:");
-		labelMatricula.setBounds(20, 113, 126, 17);
-		labelMatricula.setFont(FormUtil.getFontBold(12));
-		add(labelMatricula);
+		labelMatricula.setBounds(20, 73, 146, 17);
 
+		labelMatricula.setFont(FormUtil.getFontBold(12));
+		innerPanel.add(labelMatricula);
 		editMatricula = new JFormattedTextField();
-		editMatricula.setBounds(20, 133, 126, 33);
+		editMatricula.setBounds(20, 94, 126, 33);
+		editMatricula.setBorder(new RoundedBorder());
 		editMatricula.setName(NAME_MATRICULA);
 		FormUtil.registrationNumberFormat(editMatricula);
 		editMatricula.setFont(FormUtil.getFontNormal(12));
-		labelMatricula.setLabelFor(editMatricula);
 		editMatricula.setColumns(10);
 		editMatricula.setBorder(FormUtil.getBorder(editMatricula));
-		add(editMatricula);
-
+		labelMatricula.setLabelFor(editMatricula);
+		innerPanel.add(editMatricula);
+		
 		JLabel labelNome = new JLabel("Nome:");
-		labelNome.setBounds(20, 183, 280, 17);
+		labelNome.setBounds(20, 138, 300, 17);
 		labelNome.setFont(FormUtil.getFontBold(12));
-		add(labelNome);
-
+		innerPanel.add(labelNome);
+		
 		editNome = new JTextField();
-		editNome.setBounds(20, 203, 280, 30);
+		editNome.setBounds(20, 159, 360, 30);
 		FormUtil.formatName(editNome);
+		editNome.setBorder(new RoundedBorder());
 		editNome.setName(NAME_NOME);
 		editNome.setFont(FormUtil.getFontNormal(12));
 		editNome.setColumns(10);
 		editNome.setBorder(FormUtil.getBorder(editNome));
-		add(editNome);
+		innerPanel.add(editNome);
 
 		JLabel lblNewLabel_1 = new JLabel("Sobrenome:");
-		lblNewLabel_1.setBounds(420, 183, 280, 17);
+		lblNewLabel_1.setBounds(452, 138, 330, 17);
 		lblNewLabel_1.setFont(FormUtil.getFontBold(12));
-		add(lblNewLabel_1);
+		innerPanel.add(lblNewLabel_1);
 
 		editSobrenome = new JTextField();
-		editSobrenome.setBounds(420, 203, 280, 30);
+		editSobrenome.setBounds(452, 159, 360, 30);
 		FormUtil.formatName(editSobrenome);
 		editSobrenome.setName(NAME_SOBRENOME);
 		editSobrenome.setFont(FormUtil.getFontNormal(12));
 		editSobrenome.setColumns(10);
+		editSobrenome.setBorder(new RoundedBorder());
 		editSobrenome.setBorder(FormUtil.getBorder(editSobrenome));
-		add(editSobrenome);
-
-		JLabel lblNewLabel_1_1 = new JLabel("Telefone:");
-		lblNewLabel_1_1.setBounds(20, 253, 126, 17);
-		lblNewLabel_1_1.setFont(FormUtil.getFontBold(12));
-		add(lblNewLabel_1_1);
-
+		innerPanel.add(editSobrenome);
+		
 		editTelefone = new JFormattedTextField(FormUtil.phoneNumberFormat());
-		editTelefone.setBounds(20, 273, 200, 33);
+		editTelefone.setBounds(20, 228, 220, 33);
 		editTelefone.setName(NAME_TELEFONE);
 		editTelefone.setFont(FormUtil.getFontNormal(12));
 		editTelefone.setColumns(10);
+		editTelefone.setBorder(new RoundedBorder());
 		editTelefone.setBorder(FormUtil.getBorder(editTelefone));
-		add(editTelefone);
+		innerPanel.add(editTelefone);
 
-		JLabel lblNewLabel = new JLabel("Data de nascimento:");
-		lblNewLabel.setBounds(260, 253, 171, 17);
-		lblNewLabel.setFont(FormUtil.getFontBold(12));
-		add(lblNewLabel);
-
+		JLabel lblNewLabel_1_1 = new JLabel("Telefone:");
+		lblNewLabel_1_1.setBounds(20, 208, 146, 17);
+		lblNewLabel_1_1.setFont(FormUtil.getFontBold(12));
+		innerPanel.add(lblNewLabel_1_1);
+		
 		editData = new JFormattedTextField(FormUtil.dateNumberFormat());
-		editData.setBounds(260, 273, 200, 33);
+		editData.setBounds(303, 228, 200, 33);
 		editData.setName(NAME_DATA_NASCIMENTO);
 		editData.setHorizontalAlignment(SwingConstants.CENTER);
 		editData.setFont(FormUtil.getFontNormal(12));
 		editData.setColumns(10);
+		editData.setBorder(new RoundedBorder());
 		editData.setBorder(FormUtil.getBorder(editData));
-		add(editData);
+		innerPanel.add(editData);
+
+		JLabel lblNewLabel = new JLabel("Data de nascimento:");
+		lblNewLabel.setBounds(303, 208, 200, 17);
+		innerPanel.add(lblNewLabel);
+		lblNewLabel.setFont(FormUtil.getFontBold(12));
 
 		JLabel lblNewLabel_2 = new JLabel("CPF:");
-		lblNewLabel_2.setBounds(500, 253, 197, 17);
+		lblNewLabel_2.setBounds(562, 208, 250, 17);
 		lblNewLabel_2.setFont(FormUtil.getFontBold(12));
-		add(lblNewLabel_2);
+		innerPanel.add(lblNewLabel_2);
 
 		editCPF = new JFormattedTextField(FormUtil.cpfFormat());
-		editCPF.setBounds(500, 273, 200, 33);
+		editCPF.setBounds(562, 228, 250, 33);
 		editCPF.setName(NAME_CPF);
 		editCPF.setFont(FormUtil.getFontNormal(12));
 		editCPF.setBorder(FormUtil.getBorder(editCPF));
 		editCPF.setColumns(10);
-		add(editCPF);
+		editCPF.setBorder(new RoundedBorder());
+		innerPanel.add(editCPF);
 
-		btnCadastrar = new JButton("Cadastrar");
-		btnCadastrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCadastrar.setBounds(260, 400, 200, 30);
+		chckbxPosition = new JCheckBox("Salvar na terceira posição");
+		chckbxPosition.setBackground(new Color(255, 255, 255));
+		chckbxPosition.setBounds(20, 281, 220, 23);
+		chckbxPosition.setEnabled(false);
+		chckbxPosition.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		chckbxPosition.setFont(FormUtil.getFontNormal(10));
+		
+		chckbxPosition.setIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_unchecked.png", 14, 14));
+		chckbxPosition.setSelectedIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_checked.png", 14, 14));
+		chckbxPosition.setDisabledIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_unchecked_disabled.png", 16, 16));
+        chckbxPosition.setDisabledSelectedIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_checked_disabled.png", 16, 16));
+		
+		innerPanel.add(chckbxPosition);
+		
+		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/ic_ramdom.png"));
+		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 24, 24);
+
+		JLabel textTitle = new JLabel("CADASTRAR ALUNO");
+		textTitle.setBounds(20, 25, 156, 18);
+		textTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		textTitle.setFont(FormUtil.getFontBold());
+		innerPanel.add(textTitle);
+
+		StyledButton btnRandomMat = new StyledButton(true);
+		btnRandomMat.setBounds(165, 94, 56, 33);
+		btnRandomMat.setButtonColor(Color.white);
+		btnRandomMat.setBackground(new Color(255, 255, 255));
+		btnRandomMat.setIcon(new ImageIcon(image));
+		btnRandomMat.setFocusPainted(false);
+		innerPanel.add(btnRandomMat);
+		
+		
+		btnCadastrar = new StyledButton("Cadastrar");
+		btnCadastrar.setBounds(291, 362, 250, 40);
 		btnCadastrar.setFocusPainted(false);
-		btnCadastrar.setBackground(new Color(255, 0, 51));
-		btnCadastrar.setForeground(new Color(255, 255, 255));
 		btnCadastrar.setFont(FormUtil.getFontBold(12));
-		add(btnCadastrar);
+		innerPanel.add(btnCadastrar);
 
-		btnVoltar = new JButton("Voltar");
-		btnVoltar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnVoltar.setBounds(260, 445, 200, 30);
-		btnVoltar.setForeground(new Color(51, 51, 51));
+		btnVoltar = new StyledButton("Voltar", true);
+		btnVoltar.setBounds(291, 411, 250, 40);
+		btnVoltar.setButtonColor(Color.white);
 		btnVoltar.setFont(FormUtil.getFontBold(12));
 		btnVoltar.setFocusPainted(false);
-		btnVoltar.setBackground(new Color(255, 255, 255));
-		add(btnVoltar);
+		innerPanel.add(btnVoltar);
 
 		btnVoltar.addActionListener(this);
 		btnCadastrar.addActionListener(this);
 
-		JButton btnRandomMat = new JButton();
-		btnRandomMat.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnRandomMat.setBackground(new Color(255, 255, 255));
-		btnRandomMat.setBounds(156, 133, 33, 33);
-
-		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/ic_ramdom.png"));
-		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 24, 24);
-		btnRandomMat.setIcon(new ImageIcon(image));
-		btnRandomMat.setFocusPainted(false);
-		add(btnRandomMat);
-
-		chckbxPosition = new JCheckBox("Salvar na terceira posição");
-		chckbxPosition.setEnabled(false);
-		chckbxPosition.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		chckbxPosition.setFont(FormUtil.getFontNormal(10));
-		chckbxPosition.setBounds(20, 326, 197, 23);
-		add(chckbxPosition);
-
-		updateCheckBox();
-
 		btnRandomMat.addActionListener(e -> {
 			editMatricula.setText(matriculaGerada());
 		});
+
+		updateCheckBox();
 	}
 
 	private String matriculaGerada() {
@@ -234,7 +279,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 	}
 
 	private void clearText() {
-		Component[] components = getComponents();
+		Component[] components = innerPanel.getComponents();
 		for (Component component : components) {
 			if (component instanceof JTextField) {
 				((JTextField) component).setText(null);
@@ -247,28 +292,6 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 	}
 
-	private boolean maiorIdade(int idade) {
-		for (Aluno aluno : frame.getAlunoList()) {
-			int currentIdade = aluno.getIdade();
-			if (currentIdade < idade) {
-				frame.getAlunoList().forEach((a) -> a.setMaisVelho(false));
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean menorIdade(int idade) {
-		for (Aluno aluno : frame.getAlunoList()) {
-			int currentIdade = aluno.getIdade();
-			if (currentIdade > idade) {
-				frame.getAlunoList().forEach((a) -> a.setMaisNovo(false));
-				return true;
-			}
-		}
-		return false;
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -294,11 +317,6 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		Aluno aluno = new Aluno(matricula, nome.concat(" ").concat(sobrenome), (int) getIdade(dataNascimento),
 				dateParse(dataNascimento), telefone, cpf);
 
-		if (maiorIdade(aluno.getIdade())) {
-			aluno.setMaisVelho(true);
-		} else if (menorIdade(aluno.getIdade())) {
-			aluno.setMaisNovo(true);
-		}
 
 		addAluno(aluno);
 		System.out.println(frame.getAlunoList().size());
@@ -312,8 +330,12 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 	private void updateCheckBox() {
 		int size = frame.getAlunoList().size();
-		if (size >= 3)
+		if (size >= 3) {
 			chckbxPosition.setEnabled(true);
+		}else {
+			chckbxPosition.setSelected(false);
+			chckbxPosition.setEnabled(false);
+		}
 	}
 
 	private Date dateParse(String date) {
@@ -367,7 +389,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 	private boolean isDataValid() {
 		boolean isValid = true;
 		boolean isEmpty = true;
-		Component[] components = getComponents();
+		Component[] components = innerPanel.getComponents();
 		for (Component component : components) {
 			if (component instanceof JTextField) {
 				JTextField field = ((JTextField) component);
@@ -464,6 +486,21 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		}
 
 		return isValid;
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_RENDERING, RenderingHints.VALUE_RENDER_QUALITY);
+		int w = getWidth();
+		int h = getHeight();
+
+		Point p1 = new Point(10, 10);
+		Point p2 = new Point(getWidth(), getHeight());
+		final GradientPaint gp = new GradientPaint(p1, new Color(250, 175, 123), p2, new Color(248, 201, 107), true);
+		g2d.setPaint(gp);
+		g2d.fillRect(0, 0, w, h);
 	}
 
 	private void showErrorEmptyFieldMessage(String msg) {

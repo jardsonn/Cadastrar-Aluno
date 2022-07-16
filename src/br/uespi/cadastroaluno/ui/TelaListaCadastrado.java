@@ -5,7 +5,9 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.image.BufferedImage;
@@ -18,30 +20,48 @@ import java.util.Map;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.JViewport;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 import javax.swing.plaf.ListUI;
 
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
+import br.uespi.cadastroaluno.ui.components.JMainFrame;
+import br.uespi.cadastroaluno.ui.components.JPanelCard;
+import br.uespi.cadastroaluno.ui.components.JPlaceholderTextField;
+import br.uespi.cadastroaluno.ui.components.JScrollPanelCard;
+import br.uespi.cadastroaluno.ui.components.RoundedBorder;
+import br.uespi.cadastroaluno.ui.components.StyledButton;
 import br.uespi.cadastroaluno.utils.FormUtil;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
+import java.awt.Dimension;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.border.CompoundBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.JMenuBar;
+import java.awt.SystemColor;
+import javax.swing.JTextPane;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.Rectangle;
 
 public class TelaListaCadastrado extends JPanel {
 
@@ -54,18 +74,31 @@ public class TelaListaCadastrado extends JPanel {
 
 	private JButton btnCadastrar;
 
-	JLabel textMatriculaSelecionado;
-	JLabel textNomeSelecionado;
-	JLabel textDataSelecionado;
-	JLabel textTelefoneSelecionado;
-	JLabel textCpfSelecionado;
-	JButton btnSalvar;
-	JButton btnDelete;
+	private JLabel textMatriculaSelecionado;
+	private JLabel textNomeSelecionado;
+	private JLabel textDataSelecionado;
+	private JLabel textTelefoneSelecionado;
+	private JLabel textCpfSelecionado;
+	private StyledButton btnSalvar;
+	private StyledButton btnDelete;
 	private JPanel infoPanel;
+
+	private JList<Aluno> list;
+	private DefaultListModel<Aluno> listModel;
+
+	private Dimension screenSize;
+	private JPlaceholderTextField editFindStudent;
 
 	public TelaListaCadastrado(JMainFrame frame) {
 		this.frame = frame;
 		alunoList = frame.getAlunoList();
+		JFrame jfarme = new JFrame();
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		jfarme.setBounds(0, 0, screenSize.width, screenSize.height);
+		jfarme.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		jfarme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		jfarme.getContentPane().add(this);
+
 		initialize();
 	}
 
@@ -79,6 +112,7 @@ public class TelaListaCadastrado extends JPanel {
 	}
 
 	private void updateScreen(boolean isEmpty) {
+
 		removeAll();
 		if (isEmpty) {
 			add(panelEmptyList());
@@ -87,6 +121,9 @@ public class TelaListaCadastrado extends JPanel {
 		}
 		frame.revalidate();
 		frame.repaint();
+
+		// add(panelList());
+		// add(panelEmptyList());
 	}
 
 	private void initialize() {
@@ -96,107 +133,146 @@ public class TelaListaCadastrado extends JPanel {
 
 	private JPanel panelList() {
 		JPanel mainPanelList = new JPanel();
-		mainPanelList.setBounds(0, 0, 720, 485);
+		mainPanelList.setBounds(0, 0, 1367, 696);
+		mainPanelList.setBackground(new Color(240, 240, 240));
 
-		DefaultListModel<Aluno> listModel = new DefaultListModel<Aluno>();
+		listModel = new DefaultListModel<Aluno>();
 		mainPanelList.setLayout(null);
-		JList<Aluno> list = new JList<Aluno>(listModel);
+		list = new JList<Aluno>(listModel);
 		list.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		list.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		list.setSelectionBackground(new Color(204, 0, 51, 24));
-		list.setSelectionForeground(new Color(204, 0, 51, 255));
+		list.setSelectionBackground(new Color(248, 201, 107, 30));
+		list.setSelectionForeground(new Color(250, 112, 3));
+		list.setBorder(new LineBorder(Color.white, 10, true));
 
 		list.setFont(FormUtil.getFontNormal(12));
-		// list.setBounds(20, 66, 360, 408);
-		list.setFixedCellHeight(50);
+		list.setFixedCellHeight(45);
 		list.setFixedCellWidth(100);
+		list.setBorder(FormUtil.getBorder(list, 20, 0, 0, 0));
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(20, 20, 360, 415);
+		JPanelCard panelList = new JPanelCard();
+		panelList.setBounds(255, 68, 418, 580);
+		mainPanelList.add(panelList);
+		panelList.setLayout(null);
+
+		JLabel labelNameList = new JLabel("ALUNOS");
+		labelNameList.setBounds(21, 22, 115, 14);
+		labelNameList.setFont(FormUtil.getFontBold(14));
+		panelList.add(labelNameList);
+
+		JScrollPanelCard scrollPane = new JScrollPanelCard();
+		scrollPane.setBounds(0, 79, 418, 501);
 		scrollPane.setViewportView(list);
-		// scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
-		mainPanelList.add(scrollPane);
+		scrollPane.setBorder(new LineBorder(Color.white, 10, true));
+		scrollPane.getVerticalScrollBar().setPreferredSize(new Dimension(15, 0));
+		list.setCellRenderer(new DefaultListCellRenderer() {
 
-		infoPanel = new JPanel();
-		infoPanel.setBounds(395, 20, 300, 415);
+			@Override
+			public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected,
+					boolean cellHasFocus) {
+				JLabel listCellRendererComponent = (JLabel) super.getListCellRendererComponent(list, value, index,
+						isSelected, cellHasFocus);
+				if (isSelected) {
+					listCellRendererComponent.setBorder(new RoundedBorder(new Color(250, 112, 50, 20)));
+					listCellRendererComponent.setFont(FormUtil.getFontBold(12));
+				} else
+					listCellRendererComponent.setBorder(new RoundedBorder(new Color(255, 255, 255, 0)));
+				return listCellRendererComponent;
+			}
+
+		});
+		panelList.add(scrollPane);
+
+		infoPanel = new JPanelCard();
+		infoPanel.setBounds(693, 68, 418, 580);
+
+		editFindStudent = new JPlaceholderTextField();
+		editFindStudent.setLocation(21, 46);
+		editFindStudent.setSize(366, 30);
+		editFindStudent.setHorizontalAlignment(SwingConstants.LEFT);
+		editFindStudent.setPlaceholder("Buscar aluno");
+		editFindStudent.setFont(FormUtil.getFontNormal(12));
+		editFindStudent.setBorder(new RoundedBorder());
+		editFindStudent.setColumns(10);
+		panelList.add(editFindStudent);
 
 		/*
-		 * for(int i = 0; i< 50; i++) { frame.addNewAluno(new
-		 * Aluno("145447"+i,"Jardson Costa"+i, 2*i, new Date(), "98 984898889",
-		 * "618.054.747-5"+i), i==8); }
+		 * for (int i = 0; i < 50; i++) { frame.addNewAluno(new Aluno("145447" + i,
+		 * "Jardson Costa " + i, 2 * i, new Date(), "98 984898889", "618.054.747-5" +
+		 * i), i == 8); }
 		 */
 
 		for (Aluno aluno : alunoList) {
-			listModel.addElement(aluno);
+			adicionarNaLista(aluno);
 		}
-		
+
 		infoPanel.setLayout(null);
 
 		JLabel lblNome = new JLabel("Nome:");
 		lblNome.setFont(FormUtil.getFontBold(12));
-		lblNome.setBounds(0, 5, 43, 16);
+		lblNome.setBounds(20, 55, 43, 16);
 		infoPanel.add(lblNome);
 
 		JLabel lblMatricula = new JLabel("Matrícula:");
 		lblMatricula.setFont(FormUtil.getFontBold(12));
-		lblMatricula.setBounds(0, 50, 66, 16);
+		lblMatricula.setBounds(20, 100, 66, 16);
 		infoPanel.add(lblMatricula);
 
 		JLabel lblDataDeNascimento = new JLabel("Data de nascimento:");
 		lblDataDeNascimento.setFont(FormUtil.getFontBold(12));
-		lblDataDeNascimento.setBounds(0, 100, 135, 16);
+		lblDataDeNascimento.setBounds(20, 150, 135, 16);
 		infoPanel.add(lblDataDeNascimento);
 
 		JLabel lblTelefone = new JLabel("Telefone:");
 		lblTelefone.setFont(FormUtil.getFontBold(12));
-		lblTelefone.setBounds(0, 200, 62, 16);
+		lblTelefone.setBounds(20, 250, 62, 16);
 		infoPanel.add(lblTelefone);
 
 		JLabel lblCpf = new JLabel("CPF:");
 		lblCpf.setFont(FormUtil.getFontBold(12));
-		lblCpf.setBounds(0, 150, 31, 16);
+		lblCpf.setBounds(20, 200, 31, 16);
 		infoPanel.add(lblCpf);
 
 		textMatriculaSelecionado = new JLabel("0123456");
 		textMatriculaSelecionado.setFont(FormUtil.getFontNormal(12));
-		textMatriculaSelecionado.setBounds(0, 70, 289, 16);
+		textMatriculaSelecionado.setBounds(20, 120, 289, 16);
 		infoPanel.add(textMatriculaSelecionado);
 
 		textNomeSelecionado = new JLabel("Individuo");
 		textNomeSelecionado.setFont(FormUtil.getFontNormal(12));
-		textNomeSelecionado.setBounds(0, 20, 289, 16);
+		textNomeSelecionado.setBounds(20, 70, 289, 16);
 		infoPanel.add(textNomeSelecionado);
 
 		textDataSelecionado = new JLabel("04/01/2012 (14 anos de idade)");
 		textDataSelecionado.setFont(FormUtil.getFontNormal(12));
-		textDataSelecionado.setBounds(0, 120, 289, 16);
+		textDataSelecionado.setBounds(20, 170, 289, 16);
 		infoPanel.add(textDataSelecionado);
 
 		textTelefoneSelecionado = new JLabel("0000000000");
 		textTelefoneSelecionado.setFont(FormUtil.getFontNormal(12));
-		textTelefoneSelecionado.setBounds(0, 220, 289, 16);
+		textTelefoneSelecionado.setBounds(20, 270, 289, 16);
 		infoPanel.add(textTelefoneSelecionado);
 
 		textCpfSelecionado = new JLabel("000000000-00");
 		textCpfSelecionado.setFont(FormUtil.getFontNormal(12));
-		textCpfSelecionado.setBounds(0, 170, 289, 16);
+		textCpfSelecionado.setBounds(20, 220, 289, 16);
 		infoPanel.add(textCpfSelecionado);
 
-		btnSalvar = new JButton("Salvar");
-		btnSalvar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnSalvar.setBounds(0, 388, 89, 23);
+		btnSalvar = new StyledButton("Salvar", true);
+		btnSalvar.setForeground(new Color(0, 189, 121));
+		btnSalvar.setBounds(20, 525, 100, 40);
+		btnSalvar.setBorderColor(new Color(0, 189, 121));
+		btnSalvar.setButtonColor(Color.white);
 		btnSalvar.setFocusPainted(false);
-		btnSalvar.setBackground(new Color(0, 191, 76));
-		btnSalvar.setForeground(new Color(255, 255, 255));
 		btnSalvar.setFont(FormUtil.getFontBold(12));
 		infoPanel.add(btnSalvar);
 
-		btnDelete = new JButton("Excluir");
-		btnDelete.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnDelete.setBounds(205, 388, 89, 23);
+		btnDelete = new StyledButton("Excluir", true);
+		btnDelete.setBorderColor(new Color(255, 0, 46));
+		btnDelete.setButtonColor(new Color(255, 0, 46), new Color(200, 0, 46));
+		btnDelete.setForeground(Color.white);
+		btnDelete.setBounds(296, 525, 100, 40);
 		btnDelete.setFocusPainted(false);
-		btnDelete.setBackground(new Color(255, 0, 51));
-		btnDelete.setForeground(new Color(255, 255, 255));
 		btnDelete.setFont(FormUtil.getFontBold(12));
 		infoPanel.add(btnDelete);
 
@@ -219,8 +295,53 @@ public class TelaListaCadastrado extends JPanel {
 		});
 
 		setupButtonsListeners(list);
-
+		list.setSelectedIndex(0);
+		setupBusca();
 		return mainPanelList;
+	}
+
+	private void setupBusca() {
+		editFindStudent.setStudentsList(alunoList);
+		editFindStudent.setSearchStudentsListener(alunosEncontados -> {
+			listModel.clear();
+			for (Aluno aluno : alunosEncontados) {
+				listModel.addElement(aluno);
+			}
+		});
+
+	}
+
+	private void adicionarNaLista(Aluno aluno) {
+		if (maiorIdade(aluno.getIdade())) {
+			aluno.setMaisVelho(true);
+		} else if (menorIdade(aluno.getIdade())) {
+			aluno.setMaisNovo(true);
+		}
+
+		listModel.addElement(aluno);
+	}
+
+	private boolean maiorIdade(int idade) {
+		for (Aluno aluno : frame.getAlunoList()) {
+			int currentIdade = aluno.getIdade();
+			if (currentIdade < idade) {
+				frame.getAlunoList().forEach((a) -> a.setMaisVelho(false));
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	private boolean menorIdade(int idade) {
+		for (Aluno aluno : frame.getAlunoList()) {
+			int currentIdade = aluno.getIdade();
+			if (currentIdade > idade) {
+				frame.getAlunoList().forEach((a) -> a.setMaisNovo(false));
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private void setupButtonsListeners(JList<Aluno> list) {
@@ -232,8 +353,15 @@ public class TelaListaCadastrado extends JPanel {
 		btnDelete.addActionListener(e -> {
 			Aluno alunoSelecionado = list.getSelectedValue();
 			DefaultListModel<Aluno> model = (DefaultListModel<Aluno>) list.getModel();
+			// model.clear();
 			model.removeElement(alunoSelecionado);
 			frame.deleteAluno(alunoSelecionado);
+
+			// TelaListaCadastrado.this.list = new JList<Aluno>(model);
+
+			// for (Aluno aluno : alunoList) {
+			// model.addElement(aluno);
+			// }
 			boolean isEmpty = frame.getAlunoList().isEmpty();
 			setInfoVisibity(!isEmpty);
 			updateScreen(isEmpty);
@@ -242,31 +370,39 @@ public class TelaListaCadastrado extends JPanel {
 
 	private JPanel panelEmptyList() {
 		JPanel panelEmptyList = new JPanel();
-		panelEmptyList.setBounds(0, 0, 720, 485);
+		panelEmptyList.setBackground(new Color(250, 250, 250));
+		// panelEmptyList.setBounds(0, 0, 914, 597);
+		panelEmptyList.setBounds(0, 0, screenSize.width, screenSize.height);
 
 		JLabel imgNoData = new JLabel();
 		imgNoData.setHorizontalAlignment(SwingConstants.CENTER);
 
-		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/illustration_no_data.png"));
-		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 320, 250);
+		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/illustration_no_register.png"));
+		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 600, 400);
 		panelEmptyList.setLayout(null);
 		imgNoData.setIcon(new ImageIcon(image));
-		imgNoData.setBounds(200, 5, 320, 250);
+		imgNoData.setBounds(383, 28, 600, 400);
 		panelEmptyList.add(imgNoData);
 
+		JLabel labelNoStudent = new JLabel("Sem Aluno!");
+		labelNoStudent.setHorizontalAlignment(SwingConstants.CENTER);
+		labelNoStudent.setBounds(383, 424, 600, 32);
+		labelNoStudent.setFont(FormUtil.getFontBold(32));
+		labelNoStudent.setForeground(new Color(180, 180, 180));
+		panelEmptyList.add(labelNoStudent);
+
 		JLabel emptyListMessage = new JLabel(
-				"Nenhum aluno registrado, você pode cadastrar alunos clicando no botão abaixo.");
+				"<html><body><p style='text-align: center;'> Nenhum aluno foi cadastrado, clique no botão abaixo<br>para matricular</p></body></html>");
+
 		emptyListMessage.setHorizontalAlignment(SwingConstants.CENTER);
-		emptyListMessage.setFont(FormUtil.getFontBold(12));
-		emptyListMessage.setBounds(97, 264, 526, 16);
+		emptyListMessage.setFont(FormUtil.getFontBold(14));
+		emptyListMessage.setBounds(383, 460, 600, 77);
+		emptyListMessage.setForeground(new Color(180, 180, 180));
 		panelEmptyList.add(emptyListMessage);
 
-		btnCadastrar = new JButton("Cadastrar aluno");
-		btnCadastrar.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		btnCadastrar.setBounds(260, 401, 200, 30);
+		btnCadastrar = new StyledButton("Cadastrar aluno");
+		btnCadastrar.setBounds(558, 591, 250, 40);
 		btnCadastrar.setFocusPainted(false);
-		btnCadastrar.setBackground(new Color(255, 0, 51));
-		btnCadastrar.setForeground(new Color(255, 255, 255));
 		btnCadastrar.setFont(FormUtil.getFontBold(12));
 		panelEmptyList.add(btnCadastrar);
 

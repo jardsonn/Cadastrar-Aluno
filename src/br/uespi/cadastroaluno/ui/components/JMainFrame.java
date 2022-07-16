@@ -1,8 +1,10 @@
-package br.uespi.cadastroaluno.ui;
+package br.uespi.cadastroaluno.ui.components;
 
 import java.awt.CardLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +15,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 
 import br.uespi.cadastroaluno.model.Aluno;
+import br.uespi.cadastroaluno.ui.TelaListaCadastrado;
 import br.uespi.cadastroaluno.utils.FormUtil;
 
 public class JMainFrame extends JFrame {
@@ -23,13 +26,17 @@ public class JMainFrame extends JFrame {
 	private JMenuBar menuBar;
 
 	public JMainFrame() {
-		setLayout(null);
+		//setLayout(null);
 		getContentPane().setFont(FormUtil.getFontNormal(12));
 
-		setSize(740, 540);
-		setResizable(false);
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		setBounds(0, 0, screenSize.width, screenSize.height);
+
+		//setSize(740, 540);
+		//setResizable(false);
+		setExtendedState(JFrame.MAXIMIZED_BOTH);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		getContentPane().setLayout(null);
+		//getContentPane().setLayout(null);
 		setLocationRelativeTo(null);
 
 		menuBar = new JMenuBar();
@@ -63,7 +70,6 @@ public class JMainFrame extends JFrame {
 	}
 
 	public List<Aluno> getAlunoList() {
-		System.out.println("Aluno lista principal size " + alunoList.size());
 		return alunoList;
 	}
 
@@ -74,7 +80,7 @@ public class JMainFrame extends JFrame {
 		} else {
 			this.alunoList.add(aluno);
 		}
-		
+
 	}
 
 	public void deleteAluno(Aluno alunoSelecionado) {

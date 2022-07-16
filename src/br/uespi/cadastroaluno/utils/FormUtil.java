@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
@@ -126,6 +127,11 @@ public class FormUtil {
 
 		return mask;
 	}
+	
+	
+	public static Border getBorder(JComponent field, int top, int left, int bottom, int right) {
+		return BorderFactory.createCompoundBorder(field.getBorder(), BorderFactory.createEmptyBorder(top, left, bottom, right));
+	}
 
 	public static Border getBorder(JComponent field) {
 		return BorderFactory.createCompoundBorder(field.getBorder(), BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -141,6 +147,17 @@ public class FormUtil {
 
 		return resizedImg;
 	}
+	
+	public static ImageIcon getScaledImageIcon(ImageIcon icon, int w, int h) {
+		return new ImageIcon(getScaledImage(icon.getImage(), w, h));
+	}
+	
+	
+	public static ImageIcon getScaledImageIcon(Object obj, String path, int w, int h) {
+		return new ImageIcon(getScaledImage(new ImageIcon(obj.getClass().getResource(path)).getImage(), w, h));
+	}
+	
+	
 
 	public static String dateToString(Date date) {
 		Locale localeBr = new Locale("pt", "BR");

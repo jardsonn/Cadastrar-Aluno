@@ -98,14 +98,14 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 	private JPanelCard innerPanel;
 
-	// private List<Aluno> alunoList;
-
 	private OnClickListener backListener;
+
+	private Dimension screenSize;
 
 	public TelaDeCadastro(JMainFrame frame) {
 		this.frame = frame;
 		JFrame jfarme = new JFrame();
-		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		jfarme.setBounds(0, 0, screenSize.width, screenSize.height);
 		jfarme.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		jfarme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -116,10 +116,16 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 	private void initialize() {
 		setLayout(null);
-
 		innerPanel = new JPanelCard();
 		innerPanel.setBackground(Color.WHITE);
-		innerPanel.setBounds(258, 127, 833, 466);
+		int marginBottom = 50;
+		int width = 833;
+		int height = 466;
+		int xPosition = screenSize.width/2-(width/2);
+		int yPosition = screenSize.height/2-(height/2)-marginBottom;
+
+		innerPanel.setBounds(xPosition,  yPosition, width, height);
+		
 		add(innerPanel);
 		innerPanel.setLayout(null);
 
@@ -320,8 +326,9 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 		addAluno(aluno);
 		clearText();
-		
-		FormUtil.showSuccessMessage(this, "Cadastrado com sucesso!", String.format("<html><body><b>%s</b> foi cadastrado(a) com sucesso!</html></body>", aluno.getNome()));
+
+		FormUtil.showSuccessMessage(this, "Cadastrado com sucesso!",
+				String.format("<html><body><b>%s</b> foi cadastrado(a) com sucesso!</html></body>", aluno.getNome()));
 	}
 
 	private void addAluno(Aluno aluno) {
@@ -459,7 +466,8 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 				case NAME_CPF:
 					if (editCPF.getValue() == null) {
 						isValid = false;
-						FormUtil.showErrorMessage(this, "CPF inválido", "Este CPF é inválido. Por favor, digite novamente");
+						FormUtil.showErrorMessage(this, "CPF inválido",
+								"Este CPF é inválido. Por favor, digite novamente");
 						break;
 					}
 					if (cpfExistente(text)) {
@@ -503,7 +511,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		g2d.setPaint(gp);
 		g2d.fillRect(0, 0, w, h);
 	}
-	
+
 	public void onBack(OnClickListener backListener) {
 		this.backListener = backListener;
 

@@ -53,7 +53,8 @@ public class MenuOptionsHelper {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		Aluno firstStudent = mainJFrame.getAlunoList().get(0);
 		Aluno lastStudent = mainJFrame.getAlunoList().get(studentList.size() - 1);
-		return new PrimeiraUltimaMatricula().setPrimeiro(firstStudent.getMatricula())
+		return new PrimeiraUltimaMatricula()
+				.setPrimeiro(firstStudent.getMatricula())
 				.setUltimo(lastStudent.getMatricula());
 	}
 

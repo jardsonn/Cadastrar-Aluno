@@ -134,8 +134,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		frame.revalidate();
 		frame.repaint();
 
-		// add(panelList());
-		// add(panelEmptyList());
+		//add(panelList());
+		//add(panelEmptyList());
 	}
 
 	private void initialize() {
@@ -145,7 +145,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 	private JPanel panelList() {
 		JPanel mainPanelList = new JPanel();
-		mainPanelList.setBounds(0, 0, 1367, 696);
+		
+		mainPanelList.setBounds(0, 0, screenSize.width, screenSize.height);
 		mainPanelList.setBackground(new Color(240, 240, 240));
 
 		listModel = new DefaultListModel<Aluno>();
@@ -162,8 +163,15 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		list.setFixedCellWidth(100);
 		list.setBorder(FormUtil.getBorder(list, 20, 0, 0, 0));
 
+		int marginRight = 20;
+		int marginBottom = 50;
+		int width = 418;
+		int height = 580;
+		int xPosition = ((screenSize.width/2)-width)+marginRight;
+		int yPosition = (screenSize.height/2)-(height/2)-marginBottom;
+		
 		JPanelCard panelList = new JPanelCard();
-		panelList.setBounds(255, 68, 418, 580);
+		panelList.setBounds(xPosition,  yPosition, width, height);
 		mainPanelList.add(panelList);
 		panelList.setLayout(null);
 
@@ -235,8 +243,15 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 	}
 
 	private void setupPanelInfo(JPanel mainPanelList) {
+		int marginLeft = 20;
+		int marginBottom = 50;
+		int width = 418;
+		int height = 580;
+		int xPosition = (screenSize.width)-(width+width/2)-marginLeft;
+		int yPosition = (screenSize.height/2)-(height/2)-marginBottom;
+
 		infoPanel = new JPanelCard();
-		infoPanel.setBounds(693, 68, 418, 580);
+		infoPanel.setBounds(xPosition,  yPosition, width, height);
 
 		infoPanel.setLayout(null);
 
@@ -315,10 +330,19 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		infoPanel.setVisible(isSelected);
 		notFoundPanel.setVisible(!isSelected);
 	}
+	
+	
 
 	private void setupPanelNotFound(JPanel mainPanelList) {
+		int marginLeft = 20;
+		int marginBottom = 50;
+		int width = 418;
+		int height = 580;
+		int xPosition = (screenSize.width)-(width+width/2)-marginLeft;
+		int yPosition = (screenSize.height/2)-(height/2)-marginBottom;
+		
 		notFoundPanel = new JPanelCard();
-		notFoundPanel.setBounds(693, 68, 418, 580);
+		notFoundPanel.setBounds(xPosition,  yPosition, width, height);
 		notFoundPanel.setLayout(null);
 
 		JLabel imgNoNotfound = new JLabel();
@@ -395,7 +419,6 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 	private JPanel panelEmptyList() {
 		JPanel panelEmptyList = new JPanel();
 		panelEmptyList.setBackground(new Color(250, 250, 250));
-		// panelEmptyList.setBounds(0, 0, 914, 597);
 		panelEmptyList.setBounds(0, 0, screenSize.width, screenSize.height);
 
 		JLabel imgNoData = new JLabel();

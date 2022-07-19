@@ -60,10 +60,6 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 
 		setLocationRelativeTo(null);
 
-		// list.setSelectionBackground(new Color(248, 201, 107, 30));
-		// list.setSelectionForeground(new Color(250, 112, 3));
-
-		// UIManager.put("MenuItem.background", new Color(250, 175, 123));
 		UIManager.put("MenuItem.background", Color.white);
 		UIManager.put("MenuItem.selectionBackground", new Color(253, 239, 211));
 		UIManager.put("MenuItem.selectionForeground", new Color(250, 112, 3));
@@ -71,12 +67,9 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 		UIManager.put("MenuItem.opaque", true);
 		UIManager.put("MenuItem.font", FormUtil.getFontNormal(12));
 		UIManager.put("MenuItem.borderPainted", false);
-		// UIManager.put("PopupMenu.border", new RoundedBorder(Color.black, 5));
 		UIManager.put("PopupMenu.opaque", true);
 		UIManager.put("PopupMenu.border", new LineBorder(new Color(255, 255, 255), 10, true));
 		UIManager.put("PopupMenu.background", new Color(255, 255, 255, 100));
-		// MenuBar.selectionBackground
-		// MenuBar.selectionForeground
 		UIManager.put("MenuBar.opaque", true);
 
 		menuBar = new StyledMenuBar();
@@ -132,13 +125,13 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 		
 		/*
 		alunoList
-				.add(new Aluno("1237458", "Naira Costa", 23, new Date("04/07/1980"), "98 12587954", "618.054.747-57"));
+				.add(new Aluno("1237458", "Naira Costa", 14, new Date("04/07/1980"), "98 12587954", "618.054.747-57"));
 		alunoList.add(
 				new Aluno("1237458", "Jardson Costa", 22, new Date("24/01/2000"), "98 56984756", "684.054.747-57"));
 		alunoList
 				.add(new Aluno("1237458", "José Araujo", 25, new Date("07/04/2008"), "98 36548957", "697.054.747-57"));
-*/
-		 
+
+		 */
 		updateOlderNewer();
 	}
 	
@@ -156,9 +149,7 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 	}
 
 	public void updateMenuVisibility() {
-		
 		 menuBar.setVisible(getContentPane() instanceof TelaListaCadastrado && !alunoList.isEmpty());
-		//menuBar.setVisible(true);
 	}
 
 	public List<Aluno> getAlunoList() {

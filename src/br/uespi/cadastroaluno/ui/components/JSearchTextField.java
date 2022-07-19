@@ -15,7 +15,7 @@ import javax.swing.text.Document;
 import br.uespi.cadastroaluno.interfaces.SearchStudentsListener;
 import br.uespi.cadastroaluno.model.Aluno;
 
-public class JPlaceholderTextField extends JTextField implements DocumentListener {
+public class JSearchTextField extends JTextField implements DocumentListener {
 
 	private String placeholder;
 
@@ -24,21 +24,21 @@ public class JPlaceholderTextField extends JTextField implements DocumentListene
 
 	private SearchStudentsListener studentListener;
 
-	public JPlaceholderTextField() {
+	public JSearchTextField() {
 		getDocument().addDocumentListener(this);
 	}
 
-	public JPlaceholderTextField(final String placeholder) {
+	public JSearchTextField(final String placeholder) {
 		this.placeholder = placeholder;
 		getDocument().addDocumentListener(this);
 	}
 
-	public JPlaceholderTextField(List<Aluno> studentsList) {
+	public JSearchTextField(List<Aluno> studentsList) {
 		this.studentsList = studentsList;
 		getDocument().addDocumentListener(this);
 	}
 
-	public JPlaceholderTextField(final String placeholder, List<Aluno> studentsList) {
+	public JSearchTextField(final String placeholder, List<Aluno> studentsList) {
 		this.studentsList = studentsList;
 		this.placeholder = placeholder;
 		getDocument().addDocumentListener(this);
@@ -69,10 +69,10 @@ public class JPlaceholderTextField extends JTextField implements DocumentListene
 	@Override
 	public void insertUpdate(DocumentEvent e) {
 		if (studentsList != null) {
-			String text = getText().trim();
+			String text = getText().trim().toLowerCase();
 			List<Aluno> studentsFoundList = new ArrayList();
 			for (Aluno aluno : studentsList) {
-				if (aluno.getNome().contains(text) || aluno.getMatricula() == text) {
+				if (aluno.getNome().toLowerCase().contains(text) || aluno.getMatricula().contains(text)) {
 					studentsFoundList.add(aluno);
 				}
 			}
@@ -86,10 +86,10 @@ public class JPlaceholderTextField extends JTextField implements DocumentListene
 	@Override
 	public void removeUpdate(DocumentEvent e) {
 		if (studentsList != null) {
-			String text = getText().trim();
+			String text = getText().trim().toLowerCase();
 			List<Aluno> studentsFoundList = new ArrayList();
 			for (Aluno aluno : studentsList) {
-				if (aluno.getNome().contains(text) || aluno.getMatricula() == text) {
+				if (aluno.getNome().toLowerCase().contains(text) || aluno.getMatricula().contains(text)) {
 					studentsFoundList.add(aluno);
 				}
 			}

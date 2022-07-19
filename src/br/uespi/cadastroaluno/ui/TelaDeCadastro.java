@@ -35,6 +35,7 @@ import javax.swing.event.ChangeListener;
 
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
+import br.uespi.cadastroaluno.ui.components.JEditText;
 import br.uespi.cadastroaluno.ui.components.JMainFrame;
 import br.uespi.cadastroaluno.ui.components.JPanelCard;
 import br.uespi.cadastroaluno.ui.components.RoundedBorder;
@@ -44,6 +45,7 @@ import br.uespi.cadastroaluno.utils.FormUtil;
 import javax.swing.JToolBar;
 import javax.swing.SpinnerListModel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
@@ -56,6 +58,8 @@ import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JScrollBar;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
+
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.RenderingHints;
@@ -100,8 +104,6 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 	public TelaDeCadastro(JMainFrame frame) {
 		this.frame = frame;
-		// alunoList = new ArrayList<>();
-
 		JFrame jfarme = new JFrame();
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		jfarme.setBounds(0, 0, screenSize.width, screenSize.height);
@@ -126,7 +128,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 		labelMatricula.setFont(FormUtil.getFontBold(12));
 		innerPanel.add(labelMatricula);
-		editMatricula = new JFormattedTextField();
+		editMatricula = new JEditText("0123456");
 		editMatricula.setBounds(20, 94, 126, 33);
 		editMatricula.setBorder(new RoundedBorder());
 		editMatricula.setName(NAME_MATRICULA);
@@ -136,13 +138,13 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		editMatricula.setBorder(FormUtil.getBorder(editMatricula));
 		labelMatricula.setLabelFor(editMatricula);
 		innerPanel.add(editMatricula);
-		
+
 		JLabel labelNome = new JLabel("Nome:");
 		labelNome.setBounds(20, 138, 300, 17);
 		labelNome.setFont(FormUtil.getFontBold(12));
 		innerPanel.add(labelNome);
-		
-		editNome = new JTextField();
+
+		editNome = new JEditText("Ada");
 		editNome.setBounds(20, 159, 360, 30);
 		FormUtil.formatName(editNome);
 		editNome.setBorder(new RoundedBorder());
@@ -157,7 +159,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		lblNewLabel_1.setFont(FormUtil.getFontBold(12));
 		innerPanel.add(lblNewLabel_1);
 
-		editSobrenome = new JTextField();
+		editSobrenome = new JEditText("Lovelace");
 		editSobrenome.setBounds(452, 159, 360, 30);
 		FormUtil.formatName(editSobrenome);
 		editSobrenome.setName(NAME_SOBRENOME);
@@ -166,8 +168,8 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		editSobrenome.setBorder(new RoundedBorder());
 		editSobrenome.setBorder(FormUtil.getBorder(editSobrenome));
 		innerPanel.add(editSobrenome);
-		
-		editTelefone = new JFormattedTextField(FormUtil.phoneNumberFormat());
+
+		editTelefone = new JEditText(FormUtil.phoneNumberFormat());
 		editTelefone.setBounds(20, 228, 220, 33);
 		editTelefone.setName(NAME_TELEFONE);
 		editTelefone.setFont(FormUtil.getFontNormal(12));
@@ -180,7 +182,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		lblNewLabel_1_1.setBounds(20, 208, 146, 17);
 		lblNewLabel_1_1.setFont(FormUtil.getFontBold(12));
 		innerPanel.add(lblNewLabel_1_1);
-		
+
 		editData = new JFormattedTextField(FormUtil.dateNumberFormat());
 		editData.setBounds(303, 228, 200, 33);
 		editData.setName(NAME_DATA_NASCIMENTO);
@@ -205,7 +207,6 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		editCPF.setBounds(562, 228, 250, 33);
 		editCPF.setName(NAME_CPF);
 		editCPF.setFont(FormUtil.getFontNormal(12));
-		editCPF.setBorder(FormUtil.getBorder(editCPF));
 		editCPF.setColumns(10);
 		editCPF.setBorder(new RoundedBorder());
 		innerPanel.add(editCPF);
@@ -216,14 +217,16 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		chckbxPosition.setEnabled(false);
 		chckbxPosition.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		chckbxPosition.setFont(FormUtil.getFontNormal(10));
-		
+
 		chckbxPosition.setIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_unchecked.png", 14, 14));
 		chckbxPosition.setSelectedIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_checked.png", 14, 14));
-		chckbxPosition.setDisabledIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_unchecked_disabled.png", 16, 16));
-        chckbxPosition.setDisabledSelectedIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_checked_disabled.png", 16, 16));
-		
+		chckbxPosition
+				.setDisabledIcon(FormUtil.getScaledImageIcon(this, "img/checkbox_unchecked_disabled.png", 16, 16));
+		chckbxPosition.setDisabledSelectedIcon(
+				FormUtil.getScaledImageIcon(this, "img/checkbox_checked_disabled.png", 16, 16));
+
 		innerPanel.add(chckbxPosition);
-		
+
 		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/ic_ramdom.png"));
 		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 24, 24);
 
@@ -240,8 +243,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		btnRandomMat.setIcon(new ImageIcon(image));
 		btnRandomMat.setFocusPainted(false);
 		innerPanel.add(btnRandomMat);
-		
-		
+
 		btnCadastrar = new StyledButton("Cadastrar");
 		btnCadastrar.setBounds(291, 362, 250, 40);
 		btnCadastrar.setFocusPainted(false);
@@ -292,7 +294,6 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 	}
 
-
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == btnCadastrar) {
@@ -317,10 +318,10 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		Aluno aluno = new Aluno(matricula, nome.concat(" ").concat(sobrenome), (int) getIdade(dataNascimento),
 				dateParse(dataNascimento), telefone, cpf);
 
-
 		addAluno(aluno);
-		System.out.println(frame.getAlunoList().size());
 		clearText();
+		
+		FormUtil.showSuccessMessage(this, "Cadastrado com sucesso!", String.format("<html><body><b>%s</b> foi cadastrado(a) com sucesso!</html></body>", aluno.getNome()));
 	}
 
 	private void addAluno(Aluno aluno) {
@@ -332,7 +333,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		int size = frame.getAlunoList().size();
 		if (size >= 3) {
 			chckbxPosition.setEnabled(true);
-		}else {
+		} else {
 			chckbxPosition.setSelected(false);
 			chckbxPosition.setEnabled(false);
 		}
@@ -406,12 +407,12 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 					isEmpty = text.isEmpty();
 					if (!isMatriculaValida && !isEmpty) {
 						isValid = false;
-						showErrorMessage("Matrícula inválida", "A matrícula deve ter 7 (sete) dígitos.");
+						FormUtil.showErrorMessage(this, "Matrícula inválida", "A matrícula deve ter 7 (sete) dígitos.");
 						break;
 					}
 					if (matriculaExistente(text)) {
 						isValid = false;
-						showErrorMessage("Matrícula já cadastrada",
+						FormUtil.showErrorMessage(this, "Matrícula já cadastrada",
 								"Essa matricula já está cadastrada. Por favor, escolha outra.");
 						break;
 					}
@@ -419,7 +420,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 				case NAME_DATA_NASCIMENTO:
 					if (editData.getValue() == null) {
 						isValid = false;
-						showErrorMessage("Data de nascimento inválida",
+						FormUtil.showErrorMessage(this, "Data de nascimento inválida",
 								"A data de nascimento é inválida. Por favor, use o formato dd/mm/yyyy.");
 						break;
 					} else {
@@ -435,13 +436,13 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 						} catch (DateTimeException e) {
 							isValid = false;
 							if (e.getMessage().contains("Invalid value for MonthOfYear")) {
-								showErrorMessage("Data de nascimento inválida",
+								FormUtil.showErrorMessage(this, "Data de nascimento inválida",
 										"O mês digitado é inválido. Por favor, digite um mês válido.");
 							} else if (e.getMessage().contains("Invalid value for Year")) {
-								showErrorMessage("Data de nascimento inválida",
+								FormUtil.showErrorMessage(this, "Data de nascimento inválida",
 										"O ano digitado é inválido. Por favor, digite um ano válido.");
 							} else if (e.getMessage().contains("Invalid value for DayOfMonth")) {
-								showErrorMessage("Data de nascimento inválida",
+								FormUtil.showErrorMessage(this, "Data de nascimento inválida",
 										"O dia digitado é inválido. Por favor, digite um dia válido.");
 							}
 						}
@@ -450,7 +451,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 				case NAME_TELEFONE:
 					if (editTelefone.getValue() == null) {
 						isValid = false;
-						showErrorMessage("Número de telefone inválido",
+						FormUtil.showErrorMessage(this, "Número de telefone inválido",
 								"Este número de telefone é inválido. Por favor, digite novamente");
 						break;
 					}
@@ -458,12 +459,12 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 				case NAME_CPF:
 					if (editCPF.getValue() == null) {
 						isValid = false;
-						showErrorMessage("CPF inválido", "Este CPF é inválido. Por favor, digite novamente");
+						FormUtil.showErrorMessage(this, "CPF inválido", "Este CPF é inválido. Por favor, digite novamente");
 						break;
 					}
 					if (cpfExistente(text)) {
 						isValid = false;
-						showErrorMessage("CPF já cadastrada",
+						FormUtil.showErrorMessage(this, "CPF já cadastrada",
 								"Esse CPF já está cadastrado. É possível que esse aluno já esteja matriculado nesse sistema.");
 						break;
 					}
@@ -479,7 +480,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 
 				if (isEmpty) {
 					isValid = false;
-					showErrorEmptyFieldMessage("O campo " + field.getName() + " é obrigatório");
+					FormUtil.showErrorEmptyFieldMessage(this, "O campo " + field.getName() + " é obrigatório");
 					break;
 				}
 			}
@@ -502,15 +503,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		g2d.setPaint(gp);
 		g2d.fillRect(0, 0, w, h);
 	}
-
-	private void showErrorEmptyFieldMessage(String msg) {
-		showErrorMessage("Campo Obrigatório", msg);
-	}
-
-	private void showErrorMessage(String title, String msg) {
-		JOptionPane.showMessageDialog(null, msg, title, JOptionPane.ERROR_MESSAGE);
-	}
-
+	
 	public void onBack(OnClickListener backListener) {
 		this.backListener = backListener;
 

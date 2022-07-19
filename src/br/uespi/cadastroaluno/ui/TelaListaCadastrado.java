@@ -37,14 +37,16 @@ import javax.swing.border.LineBorder;
 import javax.swing.plaf.ListUI;
 
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
+import br.uespi.cadastroaluno.interfaces.OnItemMenuClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
 import br.uespi.cadastroaluno.ui.components.JMainFrame;
 import br.uespi.cadastroaluno.ui.components.JPanelCard;
-import br.uespi.cadastroaluno.ui.components.JPlaceholderTextField;
+import br.uespi.cadastroaluno.ui.components.JSearchTextField;
 import br.uespi.cadastroaluno.ui.components.JScrollPanelCard;
 import br.uespi.cadastroaluno.ui.components.RoundedBorder;
 import br.uespi.cadastroaluno.ui.components.StyledButton;
 import br.uespi.cadastroaluno.utils.FormUtil;
+import br.uespi.cadastroaluno.utils.MenuOptionsHelper;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -63,7 +65,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Rectangle;
 
-public class TelaListaCadastrado extends JPanel {
+public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListener {
 
 	private static final long serialVersionUID = -4139369237312199337L;
 
@@ -82,12 +84,15 @@ public class TelaListaCadastrado extends JPanel {
 	private StyledButton btnSalvar;
 	private StyledButton btnDelete;
 	private JPanel infoPanel;
+	private JPanelCard notFoundPanel;
 
 	private JList<Aluno> list;
 	private DefaultListModel<Aluno> listModel;
 
 	private Dimension screenSize;
-	private JPlaceholderTextField editFindStudent;
+	private JSearchTextField editFindStudent;
+
+	private MenuOptionsHelper menuHelper;
 
 	public TelaListaCadastrado(JMainFrame frame) {
 		this.frame = frame;
@@ -99,7 +104,15 @@ public class TelaListaCadastrado extends JPanel {
 		jfarme.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jfarme.getContentPane().add(this);
 
+		frame.setMenuItemClickListener(this);
+
+		menuHelper = new MenuOptionsHelper(this);
+
 		initialize();
+	}
+
+	public JMainFrame getMainFrame() {
+		return frame;
 	}
 
 	@Override
@@ -111,8 +124,7 @@ public class TelaListaCadastrado extends JPanel {
 		initialize();
 	}
 
-	private void updateScreen(boolean isEmpty) {
-
+	public void updateScreen(boolean isEmpty) {
 		removeAll();
 		if (isEmpty) {
 			add(panelEmptyList());
@@ -182,11 +194,7 @@ public class TelaListaCadastrado extends JPanel {
 
 		});
 		panelList.add(scrollPane);
-
-		infoPanel = new JPanelCard();
-		infoPanel.setBounds(693, 68, 418, 580);
-
-		editFindStudent = new JPlaceholderTextField();
+		editFindStudent = new JSearchTextField();
 		editFindStudent.setLocation(21, 46);
 		editFindStudent.setSize(366, 30);
 		editFindStudent.setHorizontalAlignment(SwingConstants.LEFT);
@@ -196,15 +204,39 @@ public class TelaListaCadastrado extends JPanel {
 		editFindStudent.setColumns(10);
 		panelList.add(editFindStudent);
 
-		/*
-		 * for (int i = 0; i < 50; i++) { frame.addNewAluno(new Aluno("145447" + i,
-		 * "Jardson Costa " + i, 2 * i, new Date(), "98 984898889", "618.054.747-5" +
-		 * i), i == 8); }
-		 */
+		setupPanelNotFound(mainPanelList);
+		setupPanelInfo(mainPanelList);
 
 		for (Aluno aluno : alunoList) {
 			adicionarNaLista(aluno);
 		}
+
+		setInfoVisibity(false);
+
+		list.getSelectionModel().addListSelectionListener(e -> {
+			setInfoVisibity(true);
+			Aluno aluno = list.getSelectedValue();
+			if (aluno != null) {
+				textMatriculaSelecionado.setText(aluno.getMatricula());
+				textNomeSelecionado.setText(aluno.getNome());
+				textDataSelecionado.setText(FormUtil.dateToString(aluno.getDataNascimento())
+						.concat(String.format(" (%d anos de idade)", aluno.getIdade())));
+				textTelefoneSelecionado.setText(aluno.getTelefone());
+				textCpfSelecionado.setText(aluno.getCPF());
+			}
+
+		});
+
+		setupButtonsListeners(list);
+		list.setSelectedIndex(0);
+		setupBusca();
+		updateInfoPanel(!alunoList.isEmpty());
+		return mainPanelList;
+	}
+
+	private void setupPanelInfo(JPanel mainPanelList) {
+		infoPanel = new JPanelCard();
+		infoPanel.setBounds(693, 68, 418, 580);
 
 		infoPanel.setLayout(null);
 
@@ -277,27 +309,45 @@ public class TelaListaCadastrado extends JPanel {
 		infoPanel.add(btnDelete);
 
 		mainPanelList.add(infoPanel);
+	}
 
-		setInfoVisibity(false);
+	private void updateInfoPanel(boolean isSelected) {
+		infoPanel.setVisible(isSelected);
+		notFoundPanel.setVisible(!isSelected);
+	}
 
-		list.getSelectionModel().addListSelectionListener(e -> {
-			setInfoVisibity(true);
-			Aluno aluno = list.getSelectedValue();
-			if (aluno != null) {
-				textMatriculaSelecionado.setText(aluno.getMatricula());
-				textNomeSelecionado.setText(aluno.getNome());
-				textDataSelecionado.setText(FormUtil.dateToString(aluno.getDataNascimento())
-						.concat(String.format(" (%d anos de idade)", aluno.getIdade())));
-				textTelefoneSelecionado.setText(aluno.getTelefone());
-				textCpfSelecionado.setText(aluno.getCPF());
-			}
+	private void setupPanelNotFound(JPanel mainPanelList) {
+		notFoundPanel = new JPanelCard();
+		notFoundPanel.setBounds(693, 68, 418, 580);
+		notFoundPanel.setLayout(null);
 
-		});
+		JLabel imgNoNotfound = new JLabel();
+		imgNoNotfound.setHorizontalAlignment(SwingConstants.CENTER);
 
-		setupButtonsListeners(list);
-		list.setSelectedIndex(0);
-		setupBusca();
-		return mainPanelList;
+		ImageIcon imgIcon = new ImageIcon(getClass().getResource("img/illustration_not_found.png"));
+		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 406, 390);
+
+		imgNoNotfound.setIcon(new ImageIcon(image));
+		imgNoNotfound.setBounds(6, 11, 406, 390);
+		notFoundPanel.add(imgNoNotfound);
+
+		JLabel labelNoData = new JLabel("Sem resultado!");
+		labelNoData.setHorizontalAlignment(SwingConstants.CENTER);
+		labelNoData.setBounds(0, 424, 418, 32);
+		labelNoData.setFont(FormUtil.getFontBold(16));
+		labelNoData.setForeground(new Color(130, 130, 130));
+		notFoundPanel.add(labelNoData);
+
+		JLabel noDataMessage = new JLabel(
+				"<html><body><p style='text-align: center;'>Nenhum aluno encontrado. Por favor, tente novamente com outro <b>nome</b> ou <b>matrícula</b>.</p></body></html>");
+
+		noDataMessage.setHorizontalAlignment(SwingConstants.CENTER);
+		noDataMessage.setFont(FormUtil.getFontNormal(14));
+		noDataMessage.setBounds(0, 460, 418, 55);
+		noDataMessage.setForeground(new Color(130, 130, 130));
+		notFoundPanel.add(noDataMessage);
+
+		mainPanelList.add(notFoundPanel);
 	}
 
 	private void setupBusca() {
@@ -307,65 +357,39 @@ public class TelaListaCadastrado extends JPanel {
 			for (Aluno aluno : alunosEncontados) {
 				listModel.addElement(aluno);
 			}
+			updateInfoPanel(!alunosEncontados.isEmpty());
+			list.setSelectedIndex(0);
 		});
-
 	}
 
 	private void adicionarNaLista(Aluno aluno) {
-		if (maiorIdade(aluno.getIdade())) {
-			aluno.setMaisVelho(true);
-		} else if (menorIdade(aluno.getIdade())) {
-			aluno.setMaisNovo(true);
-		}
 
 		listModel.addElement(aluno);
-	}
-
-	private boolean maiorIdade(int idade) {
-		for (Aluno aluno : frame.getAlunoList()) {
-			int currentIdade = aluno.getIdade();
-			if (currentIdade < idade) {
-				frame.getAlunoList().forEach((a) -> a.setMaisVelho(false));
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	private boolean menorIdade(int idade) {
-		for (Aluno aluno : frame.getAlunoList()) {
-			int currentIdade = aluno.getIdade();
-			if (currentIdade > idade) {
-				frame.getAlunoList().forEach((a) -> a.setMaisNovo(false));
-				return true;
-			}
-		}
-		return false;
 	}
 
 	private void setupButtonsListeners(JList<Aluno> list) {
 		btnSalvar.addActionListener(e -> {
 			Aluno alunoSelecionado = list.getSelectedValue();
-
+			menuHelper.saveStudent(alunoSelecionado, alunoSelecionado.getNome());
 		});
 
 		btnDelete.addActionListener(e -> {
 			Aluno alunoSelecionado = list.getSelectedValue();
 			DefaultListModel<Aluno> model = (DefaultListModel<Aluno>) list.getModel();
-			// model.clear();
-			model.removeElement(alunoSelecionado);
-			frame.deleteAluno(alunoSelecionado);
+			FormUtil.deleteWithMessageDialog(this, alunoSelecionado, aluno -> {
+				model.removeElement(alunoSelecionado);
+				frame.deleteAluno(alunoSelecionado);
 
-			// TelaListaCadastrado.this.list = new JList<Aluno>(model);
+				boolean isEmpty = frame.getAlunoList().isEmpty();
+				setInfoVisibity(!isEmpty);
+				updateScreen(isEmpty);
+			});
 
-			// for (Aluno aluno : alunoList) {
-			// model.addElement(aluno);
-			// }
-			boolean isEmpty = frame.getAlunoList().isEmpty();
-			setInfoVisibity(!isEmpty);
-			updateScreen(isEmpty);
 		});
+	}
+
+	public JList<Aluno> getStudentsList() {
+		return list;
 	}
 
 	private JPanel panelEmptyList() {
@@ -412,6 +436,7 @@ public class TelaListaCadastrado extends JPanel {
 			}
 		});
 
+		frame.updateMenuVisibility();
 		return panelEmptyList;
 	}
 
@@ -419,7 +444,40 @@ public class TelaListaCadastrado extends JPanel {
 		this.cadastrarClickListener = cadastrarClickListener;
 	}
 
-	private void setInfoVisibity(boolean isVisible) {
+	public void setInfoVisibity(boolean isVisible) {
 		infoPanel.setVisible(isVisible);
+	}
+
+	@Override
+	public void onItemClick(int item) {
+		switch (item) {
+		case JMainFrame.MENU_ITEM_NOVO_ESTUDANTE:
+			if (cadastrarClickListener != null) {
+				cadastrarClickListener.onClick(this);
+			}
+			break;
+
+		case JMainFrame.MENU_ITEM_REMOVER_UTLIMO_ESTUDANTE:
+
+			break;
+
+		case JMainFrame.MENU_ITEM_OBTER_MATRICULA:
+
+			break;
+
+		case JMainFrame.MENU_ITEM_OBTER_TERCEIRO_ALUNO:
+
+			break;
+
+		case JMainFrame.MENU_ITEM_SALVAR_TUDO:
+			menuHelper.saveAllStudents("listagem_alunos");
+			break;
+
+		case JMainFrame.MENU_ITEM_CARREGAR_ARQUIVO:
+
+			break;
+
+		}
+
 	}
 }

@@ -159,7 +159,7 @@ public class FormUtil {
 		return new ImageIcon(getScaledImage(icon.getImage(), w, h));
 	}
 
-	public static ImageIcon getScaledImageIcon(Object obj, String path, int w, int h) {
+	public static ImageIcon getScaledImageIcon(Object obj, String path, int w, int h) {		
 		return new ImageIcon(getScaledImage(new ImageIcon(obj.getClass().getResource(path)).getImage(), w, h));
 	}
 	

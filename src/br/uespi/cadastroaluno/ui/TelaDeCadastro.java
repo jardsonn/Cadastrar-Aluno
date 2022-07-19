@@ -67,10 +67,10 @@ import java.awt.Toolkit;
 
 import javax.swing.border.LineBorder;
 import javax.swing.SpringLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.FormSpecs;
-import com.jgoodies.forms.layout.RowSpec;
+//import com.jgoodies.forms.layout.FormLayout;
+//import com.jgoodies.forms.layout.ColumnSpec;
+//import com.jgoodies.forms.layout.FormSpecs;
+//import com.jgoodies.forms.layout.RowSpec;
 import javax.swing.JProgressBar;
 
 public class TelaDeCadastro extends JPanel implements ActionListener {

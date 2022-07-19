@@ -35,16 +35,16 @@ public class MenuOptionsHelper {
 		}
 	}
 
-	public void deleteLastStudent() {
+	public void deleteLastStudent(JPanel panel) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		DefaultListModel<Aluno> model = (DefaultListModel<Aluno>) jpanel.getStudentsList().getModel();
 		Aluno lastStudent = mainJFrame.getAlunoList().get(studentList.size() - 1);
-		FormUtil.deleteWithMessageDialog(this, lastStudent, aluno -> {
+		FormUtil.deleteWithMessageDialog(panel, lastStudent, aluno -> {
 			model.removeElement(aluno);
 			mainJFrame.deleteAluno(aluno);
 			boolean isEmpty = studentList.isEmpty();
 			jpanel.setInfoVisibity(!isEmpty);
-			jpanel.updateScreen(isEmpty);
+			jpanel.updateScreen(isEmpty);			
 		});
 
 	}
@@ -132,6 +132,6 @@ public class MenuOptionsHelper {
 				.append(aluno.getIdade()).append(",")
 				.append(FormUtil.dateToString(aluno.getDataNascimento(), FormUtil.PATTERN_FORMAT_DATE_CSV)).append(",")
 				.append(aluno.getTelefone()).append(",").append(aluno.getCPF()).append("\n").toString();
-	}
+	}	
 
 }

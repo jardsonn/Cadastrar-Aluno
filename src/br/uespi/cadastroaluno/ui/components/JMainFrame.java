@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.EventObject;
 import java.util.List;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -92,6 +93,9 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 		menuOptions.setBorderPainted(false);
 		menuOptions.setBorder(new RoundedBorder(Color.black));
 		menuBar.add(menuOptions);
+				
+		
+		
 
 		JMenuItem itemCadastrarAluno = new JMenuItem("Cadastrar novo aluno",
 				FormUtil.getScaledImageIcon(this, "img/ic_menu_new_student.png", 18, 18));
@@ -103,8 +107,8 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 				FormUtil.getScaledImageIcon(this, "img/ic_menu_get_3.png", 18, 18));
 		JMenuItem itemSalvarTudo = new JMenuItem("Salvar tudo",
 				FormUtil.getScaledImageIcon(this, "img/ic_menu_save_all.png", 18, 18));
-		JMenuItem itemCarregarCSV = new JMenuItem("Carregar arquivo",
-				FormUtil.getScaledImageIcon(this, "img/ic_menu_open_file.png", 18, 18));
+		JMenuItem itemCarregarCSV = new JMenuItem("Carregar arquivo TODO",
+				FormUtil.getScaledImageIcon(this, "img/ic_menu_open_file.png", 18, 18));	
 
 		itemCadastrarAluno.addMouseListener(this);
 		itemRemoverUltimo.addMouseListener(this);
@@ -126,20 +130,64 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 		menuOptions.add(itemObterTerceiro);
 		menuOptions.add(itemSalvarTudo);
 		menuOptions.add(itemCarregarCSV);
+		
+//		JButton CadastrarAluno = new JButton("Cadastrar novo aluno",
+//				FormUtil.getScaledImageIcon(this, "img/ic_menu_new_student.png", 18, 18));
+//		JButton RemoverUltimo = new JButton("Remover último aluno",
+//				FormUtil.getScaledImageIcon(this, "img/ic_menu_delete_student.png", 18, 18));
+//		JButton ObterMatricula = new JButton("Obter matrícula",
+//				FormUtil.getScaledImageIcon(this, "img/ic_menu_get_mat.png", 18, 18));
+//		JButton ObterTerceiro = new JButton("Obter terceiro aluno",
+//				FormUtil.getScaledImageIcon(this, "img/ic_menu_get_3.png", 18, 18));
+//		JButton SalvarTudo = new JButton("Salvar tudo",
+//				FormUtil.getScaledImageIcon(this, "img/ic_menu_save_all.png", 18, 18));
+//		JButton CarregarCSV = new JButton("Carregar arquivo",
+//				FormUtil.getScaledImageIcon(this, "img/ic_menu_open_file.png", 18, 18));
+//				
+//		JButton menuDif = new JButton("menuDif");
+//		menuBar.add(menuDif);
+//		
+//		menuBar.add(CadastrarAluno);
+//		menuBar.add(RemoverUltimo);
+//		menuBar.add(ObterMatricula);
+//		menuBar.add(ObterTerceiro);
+//		menuBar.add(SalvarTudo);
+//		menuBar.add(CarregarCSV);
+//		
+//
+//		CadastrarAluno.addMouseListener(this);
+//		RemoverUltimo.addMouseListener(this);
+//		ObterMatricula.addMouseListener(this);
+//		ObterTerceiro.addMouseListener(this);
+//		SalvarTudo.addMouseListener(this);
+//		CarregarCSV.addMouseListener(this);
+//		
+//		CadastrarAluno.addActionListener(this);
+//		RemoverUltimo.addActionListener(this);
+//		ObterMatricula.addActionListener(this);
+//		ObterTerceiro.addActionListener(this);
+//		SalvarTudo.addActionListener(this);
+//		CarregarCSV.addActionListener(this);
+		
+
 
 		alunoList = new ArrayList<>();
 
 		
-		/*
+		
 		alunoList
 				.add(new Aluno("1237458", "Naira Costa", 23, new Date("04/07/1980"), "98 12587954", "618.054.747-57"));
 		alunoList.add(
 				new Aluno("1237458", "Jardson Costa", 22, new Date("24/01/2000"), "98 56984756", "684.054.747-57"));
 		alunoList
 				.add(new Aluno("1237458", "José Araujo", 25, new Date("07/04/2008"), "98 36548957", "697.054.747-57"));
-*/
+
 		 
 		updateOlderNewer();
+		updateMenuItem();
+	}
+	private void updateMenuItem() {
+		menuOptions.getItem(3).setEnabled(alunoList.size() > 2);		
 	}
 	
 	@Override
@@ -171,12 +219,14 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 		} else {
 			this.alunoList.add(aluno);
 		}
+		updateMenuItem();
 		updateOlderNewer();
 	}
 
 	public void deleteAluno(Aluno alunoSelecionado) {
 		this.alunoList.remove(alunoSelecionado);
 		updateOlderNewer();
+		updateMenuItem();
 	}
 
 	private void updateOlderNewer() {

@@ -76,6 +76,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 	private JButton btnCadastrar;
 
+	private JLabel lblAlunoTotal;
 	private JLabel textMatriculaSelecionado;
 	private JLabel textNomeSelecionado;
 	private JLabel textDataSelecionado;
@@ -134,8 +135,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		frame.revalidate();
 		frame.repaint();
 
-		// add(panelList());
-		// add(panelEmptyList());
+//		add(panelList());
+//		add(panelEmptyList());
 	}
 
 	private void initialize() {
@@ -194,6 +195,11 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 		});
 		panelList.add(scrollPane);
+		
+		JLabel testeTelaInicial = new JLabel("New label");
+		testeTelaInicial.setEnabled(false);
+		testeTelaInicial.setBounds(0, 0, 418, 580);
+		panelList.add(testeTelaInicial);
 		editFindStudent = new JSearchTextField();
 		editFindStudent.setLocation(21, 46);
 		editFindStudent.setSize(366, 30);
@@ -229,8 +235,17 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 		setupButtonsListeners(list);
 		list.setSelectedIndex(0);
+		
+		lblAlunoTotal = new JLabel("Total:");
+		lblAlunoTotal.setForeground(new Color(100,100,100));
+		lblAlunoTotal.setBounds(309, 23, 78, 14);
+		lblAlunoTotal.setFont(FormUtil.getFontBold(12));
+		panelList.add(lblAlunoTotal);
 		setupBusca();
 		updateInfoPanel(!alunoList.isEmpty());
+		
+//		updateAlunoTotal();
+		
 		return mainPanelList;
 	}
 
@@ -314,6 +329,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 	private void updateInfoPanel(boolean isSelected) {
 		infoPanel.setVisible(isSelected);
 		notFoundPanel.setVisible(!isSelected);
+		updateAlunoTotal();
 	}
 
 	private void setupPanelNotFound(JPanel mainPanelList) {
@@ -458,15 +474,19 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 			break;
 
 		case JMainFrame.MENU_ITEM_REMOVER_UTLIMO_ESTUDANTE:
-
+			menuHelper.deleteLastStudent(this);
 			break;
 
-		case JMainFrame.MENU_ITEM_OBTER_MATRICULA:
+		case JMainFrame.MENU_ITEM_OBTER_MATRICULA:			
 
 			break;
 
 		case JMainFrame.MENU_ITEM_OBTER_TERCEIRO_ALUNO:
-
+			Aluno terceiroAluno = menuHelper.getThirdStudent();
+			int index = alunoList.indexOf(terceiroAluno);
+			list.setSelectedIndex(index);
+//			list.setSelectedIndex(2);
+			
 			break;
 
 		case JMainFrame.MENU_ITEM_SALVAR_TUDO:
@@ -479,5 +499,9 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 		}
 
+	}
+	
+	private void updateAlunoTotal() {
+		lblAlunoTotal.setText(String.format("Total: %d", frame.getAlunoList().size()));
 	}
 }

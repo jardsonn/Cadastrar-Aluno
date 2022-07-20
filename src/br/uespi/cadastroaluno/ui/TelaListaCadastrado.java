@@ -136,7 +136,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		frame.repaint();
 
 		// add(panelList());
-//		add(panelEmptyList());
+		//add(panelEmptyList());
 	}
 
 	private void initialize() {
@@ -168,7 +168,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		int xPosition = ((screenSize.width / 2) - width) + marginRight;
+		//int xPosition = ((screenSize.width / 2) - width) + marginRight;
+		int xPosition = ((screenSize.width / 2) - width)-10;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		JPanelCard panelList = new JPanelCard();
@@ -259,7 +260,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		int xPosition = (screenSize.width) - (width + width / 2) - marginLeft;
+		//int xPosition = ((screenSize.width) - (width*2)) + width / 2;
+		int xPosition = (screenSize.width / 2)+10;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		infoPanel = new JPanelCard();
@@ -349,7 +351,9 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		int xPosition = (screenSize.width) - (width + width / 2) - marginLeft;
+		//int xPosition = ((screenSize.width) - (width*2)) + width / 2;
+		int xPosition = (screenSize.width / 2)+10;
+		//int xPosition = (screenSize.width) - (width + width / 2) - marginLeft;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		notFoundPanel = new JPanelCard();
@@ -439,12 +443,19 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 600, 400);
 		panelEmptyList.setLayout(null);
 		imgNoData.setIcon(new ImageIcon(image));
-		imgNoData.setBounds(383, 28, 600, 400);
+		
+		int marginBottom = 35;
+		int width = 600;
+		int height = 400;
+		int xPosition = (screenSize.width/2) - (width / 2);
+		int yPosition = (screenSize.height / 2) - height + marginBottom;
+		
+		imgNoData.setBounds(xPosition, yPosition, width, height);
 		panelEmptyList.add(imgNoData);
 
 		JLabel labelNoStudent = new JLabel("Sem Aluno!");
 		labelNoStudent.setHorizontalAlignment(SwingConstants.CENTER);
-		labelNoStudent.setBounds(383, 424, 600, 32);
+		labelNoStudent.setBounds(xPosition, (screenSize.height / 2) + imgNoData.getY(), 600, 32);
 		labelNoStudent.setFont(FormUtil.getFontBold(32));
 		labelNoStudent.setForeground(new Color(180, 180, 180));
 		panelEmptyList.add(labelNoStudent);
@@ -454,12 +465,12 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 		emptyListMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyListMessage.setFont(FormUtil.getFontBold(14));
-		emptyListMessage.setBounds(383, 460, 600, 77);
+		emptyListMessage.setBounds(xPosition, (screenSize.height / 2) + labelNoStudent.getHeight()+20, 600, 77);
 		emptyListMessage.setForeground(new Color(180, 180, 180));
 		panelEmptyList.add(emptyListMessage);
 
 		btnCadastrar = new StyledButton("Cadastrar aluno");
-		btnCadastrar.setBounds(558, 591, 250, 40);
+		btnCadastrar.setBounds((screenSize.width/2) - (250 / 2), (screenSize.height / 2) + emptyListMessage.getHeight()*3, 250, 40);
 		btnCadastrar.setFocusPainted(false);
 		btnCadastrar.setFont(FormUtil.getFontBold(12));
 		panelEmptyList.add(btnCadastrar);

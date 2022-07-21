@@ -7,9 +7,14 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.PathIterator;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -24,6 +29,7 @@ import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -32,6 +38,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.JViewport;
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.ListUI;
@@ -39,6 +46,7 @@ import javax.swing.plaf.ListUI;
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.interfaces.OnItemMenuClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
+import br.uespi.cadastroaluno.model.PrimeiraUltimaMatricula;
 import br.uespi.cadastroaluno.ui.components.JMainFrame;
 import br.uespi.cadastroaluno.ui.components.JPanelCard;
 import br.uespi.cadastroaluno.ui.components.JSearchTextField;
@@ -136,7 +144,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		frame.repaint();
 
 		// add(panelList());
-		//add(panelEmptyList());
+		// add(panelEmptyList());
 	}
 
 	private void initialize() {
@@ -168,8 +176,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		//int xPosition = ((screenSize.width / 2) - width) + marginRight;
-		int xPosition = ((screenSize.width / 2) - width)-10;
+		// int xPosition = ((screenSize.width / 2) - width) + marginRight;
+		int xPosition = ((screenSize.width / 2) - width) - 10;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		JPanelCard panelList = new JPanelCard();
@@ -260,8 +268,8 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		//int xPosition = ((screenSize.width) - (width*2)) + width / 2;
-		int xPosition = (screenSize.width / 2)+10;
+		// int xPosition = ((screenSize.width) - (width*2)) + width / 2;
+		int xPosition = (screenSize.width / 2) + 10;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		infoPanel = new JPanelCard();
@@ -351,9 +359,9 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		//int xPosition = ((screenSize.width) - (width*2)) + width / 2;
-		int xPosition = (screenSize.width / 2)+10;
-		//int xPosition = (screenSize.width) - (width + width / 2) - marginLeft;
+		// int xPosition = ((screenSize.width) - (width*2)) + width / 2;
+		int xPosition = (screenSize.width / 2) + 10;
+		// int xPosition = (screenSize.width) - (width + width / 2) - marginLeft;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		notFoundPanel = new JPanelCard();
@@ -419,12 +427,16 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 				model.removeElement(alunoSelecionado);
 				frame.deleteAluno(alunoSelecionado);
 
-				boolean isEmpty = frame.getAlunoList().isEmpty();
-				setInfoVisibity(!isEmpty);
-				updateScreen(isEmpty);
+				updateList();
 			});
 
 		});
+	}
+
+	private void updateList() {
+		boolean isEmpty = frame.getAlunoList().isEmpty();
+		setInfoVisibity(!isEmpty);
+		updateScreen(isEmpty);
 	}
 
 	public JList<Aluno> getStudentsList() {
@@ -443,13 +455,13 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		Image image = FormUtil.getScaledImage(imgIcon.getImage(), 600, 400);
 		panelEmptyList.setLayout(null);
 		imgNoData.setIcon(new ImageIcon(image));
-		
+
 		int marginBottom = 35;
 		int width = 600;
 		int height = 400;
-		int xPosition = (screenSize.width/2) - (width / 2);
+		int xPosition = (screenSize.width / 2) - (width / 2);
 		int yPosition = (screenSize.height / 2) - height + marginBottom;
-		
+
 		imgNoData.setBounds(xPosition, yPosition, width, height);
 		panelEmptyList.add(imgNoData);
 
@@ -465,12 +477,13 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 		emptyListMessage.setHorizontalAlignment(SwingConstants.CENTER);
 		emptyListMessage.setFont(FormUtil.getFontBold(14));
-		emptyListMessage.setBounds(xPosition, (screenSize.height / 2) + labelNoStudent.getHeight()+20, 600, 77);
+		emptyListMessage.setBounds(xPosition, (screenSize.height / 2) + labelNoStudent.getHeight() + 20, 600, 77);
 		emptyListMessage.setForeground(new Color(180, 180, 180));
 		panelEmptyList.add(emptyListMessage);
 
 		btnCadastrar = new StyledButton("Cadastrar aluno");
-		btnCadastrar.setBounds((screenSize.width/2) - (250 / 2), (screenSize.height / 2) + emptyListMessage.getHeight()*3, 250, 40);
+		btnCadastrar.setBounds((screenSize.width / 2) - (250 / 2),
+				(screenSize.height / 2) + emptyListMessage.getHeight() * 3, 250, 40);
 		btnCadastrar.setFocusPainted(false);
 		btnCadastrar.setFont(FormUtil.getFontBold(12));
 		panelEmptyList.add(btnCadastrar);
@@ -507,15 +520,59 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 			break;
 
 		case JMainFrame.MENU_ITEM_OBTER_MATRICULA:
-
+			PrimeiraUltimaMatricula fl = menuHelper.getRegistrationFirstLast();
+			JDialog dialog = new JDialog(frame, "Selecionar Matrícula", true);
+			int w = 300;
+			int h = 200;
+			int yP = h - 100;
+			dialog.setSize(new Dimension(w, h));
+			dialog.getContentPane().setBackground(Color.white);
+			dialog.setBackground(Color.white);
+			dialog.setLocationRelativeTo(null);
+			dialog.setLayout(null);
+			
+			JLabel msg = new JLabel("Escolha a matrícula desejada");
+			msg.setBounds(w / 2 - w/2, h/2 - 70, w, 40);
+			msg.setHorizontalAlignment(SwingConstants.CENTER);
+			msg.setFont(FormUtil.getFontBold());
+			msg.setForeground(new Color(150, 150, 150));
+			
+			StyledButton btnFirst = new StyledButton("Primeira", true);
+			btnFirst.setFocusPainted(false);
+			btnFirst.setButtonColor(Color.white);
+			btnFirst.setBounds(w / 2 - 140, yP, 120, 40);
+			btnFirst.setBorderColor(new Color(253, 239, 211));
+			
+			StyledButton btnLast = new StyledButton("Última", true);
+			btnLast.setFocusPainted(false);
+			btnLast.setButtonColor(Color.white);
+			btnLast.setBounds(w / 2, yP, 120, 40);
+			btnLast.setBorderColor(new Color(253, 239, 211));
+			
+			btnFirst.addActionListener(e -> {
+				btnLast.setBorderColor(new Color(253, 239, 211));
+				btnFirst.setBorderColor(new Color(250, 112, 3));
+				msg.setText(fl.getPrimeiro());
+				list.setSelectedIndex(0);
+			});
+			
+			btnLast.addActionListener(e -> {
+				btnFirst.setBorderColor(new Color(253, 239, 211));
+				btnLast.setBorderColor(new Color(250, 112, 3));
+				msg.setText(fl.getUltimo());
+				list.setSelectedIndex(alunoList.size() - 1);
+			});
+			
+			dialog.add(msg);
+			dialog.add(btnFirst);
+			dialog.add(btnLast);
+			dialog.setVisible(true);
 			break;
 
 		case JMainFrame.MENU_ITEM_OBTER_TERCEIRO_ALUNO:
 			Aluno terceiroAluno = menuHelper.getThirdStudent();
 			int index = alunoList.indexOf(terceiroAluno);
 			list.setSelectedIndex(index);
-//			list.setSelectedIndex(2);
-
 			break;
 
 		case JMainFrame.MENU_ITEM_SALVAR_TUDO:
@@ -523,7 +580,11 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 			break;
 
 		case JMainFrame.MENU_ITEM_CARREGAR_ARQUIVO:
-
+			List<Aluno> students = menuHelper.getStudentsFromFile();
+			for (Aluno a : students) {
+				frame.addNewAluno(a, false);
+				updateList();
+			}
 			break;
 
 		}

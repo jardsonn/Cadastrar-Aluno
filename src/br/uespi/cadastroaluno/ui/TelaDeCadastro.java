@@ -322,7 +322,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		String dataNascimento = editData.getText();
 
 		Aluno aluno = new Aluno(matricula, nome.concat(" ").concat(sobrenome), (int) getIdade(dataNascimento),
-				dateParse(dataNascimento), telefone, cpf);
+				FormUtil.stringToDate(dataNascimento), telefone, cpf);
 
 		addAluno(aluno);
 		clearText();
@@ -343,15 +343,6 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		} else {
 			chckbxPosition.setSelected(false);
 			chckbxPosition.setEnabled(false);
-		}
-	}
-
-	private Date dateParse(String date) {
-		try {
-			return new SimpleDateFormat("dd/MM/yyyy").parse(date);
-		} catch (ParseException e) {
-			e.printStackTrace();
-			return null;
 		}
 	}
 

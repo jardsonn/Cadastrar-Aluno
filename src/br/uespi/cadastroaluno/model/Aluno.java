@@ -27,6 +27,7 @@ public class Aluno {
 		this.cpf = cpf;
 	}
 
+
 	public String getMatricula() {
 		return matricula;
 	}

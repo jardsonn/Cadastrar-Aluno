@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -17,6 +18,7 @@ import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
@@ -33,7 +35,7 @@ import br.uespi.cadastroaluno.model.Aluno;
 public class FormUtil {
 
 	public static final String PATTERN_FORMAT_DATE_BR = "dd 'de' MMM 'de' yyyy";
-	public static final String PATTERN_FORMAT_DATE_CSV= "dd/MM/yyyy";
+	public static final String PATTERN_FORMAT_DATE_CSV = "dd/MM/yyyy";
 
 	public static MaskFormatter cpfFormat() {
 		MaskFormatter mask = null;
@@ -159,10 +161,10 @@ public class FormUtil {
 		return new ImageIcon(getScaledImage(icon.getImage(), w, h));
 	}
 
-	public static ImageIcon getScaledImageIcon(Object obj, String path, int w, int h) {		
+	public static ImageIcon getScaledImageIcon(Object obj, String path, int w, int h) {
 		return new ImageIcon(getScaledImage(new ImageIcon(obj.getClass().getResource(path)).getImage(), w, h));
 	}
-	
+
 	public static String dateToString(Date date, String format) {
 		Locale localeBr = new Locale("pt", "BR");
 		SimpleDateFormat sdf = new SimpleDateFormat(format, localeBr);
@@ -188,6 +190,15 @@ public class FormUtil {
 	public static Font getFontNormal() {
 		return new Font("Verdana", Font.PLAIN, 14);
 	}
+	
+	public static Date stringToDate(String date) {
+		try {
+			return new SimpleDateFormat("dd/MM/yyyy").parse(date);
+		} catch (ParseException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 	public static void showErrorEmptyFieldMessage(Object obj, String msg) {
 		showErrorMessage(obj, "Campo Obrigatório", msg);
@@ -206,8 +217,9 @@ public class FormUtil {
 	public static void deleteWithMessageDialog(Object obj, Aluno aluno, OnDialogDeleteListener callback) {
 		Object[] options = { "CANCELAR", "EXCLUIR" };
 		int option = JOptionPane.showOptionDialog(null,
-				String.format("<html><body>Você realmente deseja exluir o aluno <b>%s</b>?</html></body>", aluno.getNome()), "Tem certeza?",
-				JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
+				String.format("<html><body>Você realmente deseja exluir o aluno <b>%s</b>?</html></body>",
+						aluno.getNome()),
+				"Tem certeza?", JOptionPane.DEFAULT_OPTION, JOptionPane.WARNING_MESSAGE,
 				FormUtil.getScaledImageIcon(obj, "img/ic_delete.png", 35, 35), options, options[0]);
 		if (option == 1) {
 			callback.onDeleted(aluno);

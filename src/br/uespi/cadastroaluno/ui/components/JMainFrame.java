@@ -51,7 +51,6 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 	private OnItemMenuClickListener menuItemClickListener;
 
 	public JMainFrame() {
-		// setLayout(null);
 		getContentPane().setFont(FormUtil.getFontNormal(12));
 
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -81,7 +80,6 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 	
 		menuOptions = new JMenu("Opções");
 		menuOptions.getPopupMenu().setPreferredSize(new Dimension(300, 200));
-		// menuOptions.setOpaque(true);
 		menuOptions.setFont(FormUtil.getFontBold(12));
 		menuOptions.setBorderPainted(false);
 		menuOptions.setBorder(new RoundedBorder(Color.black));
@@ -100,7 +98,7 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 				FormUtil.getScaledImageIcon(this, "img/ic_menu_get_3.png", 18, 18));
 		JMenuItem itemSalvarTudo = new JMenuItem("Salvar tudo",
 				FormUtil.getScaledImageIcon(this, "img/ic_menu_save_all.png", 18, 18));
-		JMenuItem itemCarregarCSV = new JMenuItem("Carregar arquivo TODO",
+		JMenuItem itemCarregarCSV = new JMenuItem("Carregar arquivo",
 				FormUtil.getScaledImageIcon(this, "img/ic_menu_open_file.png", 18, 18));	
 
 		itemCadastrarAluno.addMouseListener(this);
@@ -169,11 +167,11 @@ public class JMainFrame extends JFrame implements MouseListener, ActionListener 
 		
 		/*
 		alunoList
-				.add(new Aluno("1237458", "Naira Costa", 14, new Date("04/07/1980"), "98 12587954", "618.054.747-57"));
+				.add(new Aluno("1234567", "Clara Cardoso", 14, new Date("04/07/1980"), "(98) 9 5487-4445", "618.054.747-57"));
 		alunoList.add(
-				new Aluno("1237458", "Jardson Costa", 22, new Date("24/01/2000"), "98 56984756", "684.054.747-57"));
+				new Aluno("1234470", "Jardson Costa", 22, new Date("24/01/2000"), "(98) 9 5487-4445", "684.054.747-57"));
 		alunoList
-				.add(new Aluno("1237458", "José Araujo", 25, new Date("07/04/2008"), "98 36548957", "697.054.747-57"));
+				.add(new Aluno("1247867", "José Araujo", 25, new Date("07/04/2008"), "(98) 9 5487-4445", "697.054.747-57"));
 		 */
 		
 		updateOlderNewer();

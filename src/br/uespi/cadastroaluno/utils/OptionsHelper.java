@@ -1,6 +1,5 @@
 package br.uespi.cadastroaluno.utils;
 
-import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -14,41 +13,34 @@ import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JList;
-import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 
-import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
 import br.uespi.cadastroaluno.model.PrimeiraUltimaMatricula;
 import br.uespi.cadastroaluno.ui.TelaListaCadastrado;
 import br.uespi.cadastroaluno.ui.components.JMainFrame;
 
-public class MenuOptionsHelper {
+
+public class OptionsHelper {
 
 	private static final String SAVED_FILES = "Alunos Salvos/";
 
 	private TelaListaCadastrado jpanel;
 	private JMainFrame mainJFrame;
 
-	public MenuOptionsHelper(TelaListaCadastrado jpanel) {
+	
+	public OptionsHelper(TelaListaCadastrado jpanel) {
 		this.jpanel = jpanel;
 		mainJFrame = jpanel.getMainFrame();
 
 	}
 
-	public void goToRegistrationScreen(OnClickListener listener) {
-		if (listener != null) {
-			listener.onClick(jpanel);
-		}
-	}
+	
 
-	public void deleteLastStudent(JPanel panel) {
+	public void deleteLastStudent(Object obj) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		DefaultListModel<Aluno> model = (DefaultListModel<Aluno>) jpanel.getStudentsList().getModel();
 		Aluno lastStudent = mainJFrame.getAlunoList().get(studentList.size() - 1);
-		FormUtil.deleteWithMessageDialog(panel, lastStudent, aluno -> {
+		FormUtil.deleteWithMessageDialog(obj, lastStudent, aluno -> {
 			model.removeElement(aluno);
 			mainJFrame.deleteAluno(aluno);
 			boolean isEmpty = studentList.isEmpty();
@@ -57,7 +49,9 @@ public class MenuOptionsHelper {
 		});
 
 	}
-
+	
+	
+	
 	public PrimeiraUltimaMatricula getRegistrationFirstLast() {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		Aluno firstStudent = mainJFrame.getAlunoList().get(0);
@@ -66,13 +60,13 @@ public class MenuOptionsHelper {
 				.setUltimo(lastStudent.getMatricula());
 	}
 
+	
 	public Aluno getThirdStudent() {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
-		// PERGUNTAR PARA O PROFESSOR SE É O TERCEIRO ELEMENTO DA LISTA OU O ELEMENTO DE
-		// INDICE 3
 		return studentList.get(2);
 	}
 
+	
 	public void saveStudent(Aluno aluno, String fileName) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		List<Aluno> oneStudent = new ArrayList<Aluno>();
@@ -80,11 +74,13 @@ public class MenuOptionsHelper {
 		saveAllStudents(oneStudent, fileName);
 	}
 
+	
 	public void saveAllStudents(String fileName) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		saveAllStudents(studentList, fileName);
 	}
 
+	
 	public void saveAllStudents(List<Aluno> studentList, String fileName) {
 		String path = fileName.concat(".csv");
 		File studentFolder = new File(SAVED_FILES);
@@ -137,6 +133,7 @@ public class MenuOptionsHelper {
 		}
 	}
 
+	
 	public List<Aluno> getStudentsFromFile() {
 		List<Aluno> list = new ArrayList<Aluno>();
 		JFileChooser fileChooser = new JFileChooser();
@@ -173,13 +170,16 @@ public class MenuOptionsHelper {
 
 	}
 
+	
 	private String formatLineCSV(Aluno aluno) {
 		return new StringBuilder().append(aluno.getMatricula()).append(",").append(aluno.getNome()).append(",")
 				.append(aluno.getIdade()).append(",")
 				.append(FormUtil.dateToString(aluno.getDataNascimento(), FormUtil.PATTERN_FORMAT_DATE_CSV)).append(",")
-				.append(aluno.getTelefone()).append(",").append(aluno.getCPF()).append("\n").toString();
+				.append(aluno.getTelefone()).append(",").append(aluno.getCPF()).append(",").append("\n").toString();
 	}
-
+	
+	
+	
 	private List<Aluno> streamToStudent(InputStream inputStream) throws IOException {
 		List<Aluno> list = new ArrayList<Aluno>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -195,10 +195,10 @@ public class MenuOptionsHelper {
 				String data = attrs[3];
 				String telefone = attrs[4];
 				String cpf = attrs[5];
-				 int invalidIndex = validData(attrs);
+				int invalidIndex = validData(attrs);
 				if (invalidIndex != -1) {
-					throw new IOException(
-							String.format("Esse arquivo contém dados formatados incorretamente! (%s)", attrs[invalidIndex]));
+					throw new IOException(String.format("Esse arquivo contém dados formatados incorretamente! (%s)",
+							attrs[invalidIndex]));
 				}
 
 				Aluno aluno = new Aluno(matricula, nome, Integer.parseInt(idade), FormUtil.stringToDate(data), telefone,
@@ -209,6 +209,7 @@ public class MenuOptionsHelper {
 		return list;
 	}
 
+	
 	private int validData(String[] attrs) {
 		int lenMat = attrs[0].trim().length();
 		int lenDate = attrs[3].trim().length();

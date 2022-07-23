@@ -2,36 +2,22 @@ package br.uespi.cadastroaluno.ui;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
-import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.model.Aluno;
@@ -42,36 +28,17 @@ import br.uespi.cadastroaluno.ui.components.RoundedBorder;
 import br.uespi.cadastroaluno.ui.components.StyledButton;
 import br.uespi.cadastroaluno.utils.FormUtil;
 
-import javax.swing.JToolBar;
-import javax.swing.SpinnerListModel;
-
-import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.geom.RoundRectangle2D;
 
-import javax.swing.JSlider;
-import javax.swing.JSpinner;
-import javax.swing.JScrollBar;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
-
-import java.awt.Insets;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.Toolkit;
-
-import javax.swing.border.LineBorder;
-import javax.swing.SpringLayout;
-//import com.jgoodies.forms.layout.FormLayout;
-//import com.jgoodies.forms.layout.ColumnSpec;
-//import com.jgoodies.forms.layout.FormSpecs;
-//import com.jgoodies.forms.layout.RowSpec;
-import javax.swing.JProgressBar;
 
 public class TelaDeCadastro extends JPanel implements ActionListener {
 

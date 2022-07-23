@@ -2,46 +2,18 @@ package br.uespi.cadastroaluno.ui;
 
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics2D;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.RenderingHints;
-import java.awt.Shape;
 import java.awt.Toolkit;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.PathIterator;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
-import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTextField;
-import javax.swing.JToolBar;
-import javax.swing.JViewport;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
-import javax.swing.plaf.ListUI;
 
 import br.uespi.cadastroaluno.interfaces.OnClickListener;
 import br.uespi.cadastroaluno.interfaces.OnItemMenuClickListener;
@@ -54,24 +26,14 @@ import br.uespi.cadastroaluno.ui.components.JScrollPanelCard;
 import br.uespi.cadastroaluno.ui.components.RoundedBorder;
 import br.uespi.cadastroaluno.ui.components.StyledButton;
 import br.uespi.cadastroaluno.utils.FormUtil;
-import br.uespi.cadastroaluno.utils.MenuOptionsHelper;
+import br.uespi.cadastroaluno.utils.OptionsHelper;
 
 import javax.swing.JLabel;
 import javax.swing.JList;
 import java.awt.ComponentOrientation;
 import java.awt.Cursor;
 import java.awt.Dimension;
-
-import javax.swing.border.BevelBorder;
-import javax.swing.border.CompoundBorder;
-import javax.swing.border.TitledBorder;
-import javax.swing.JMenuBar;
-import java.awt.SystemColor;
-import javax.swing.JTextPane;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.Rectangle;
+import java.awt.Image;
 
 public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListener {
 
@@ -101,7 +63,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 	private Dimension screenSize;
 	private JSearchTextField editFindStudent;
 
-	private MenuOptionsHelper menuHelper;
+	private OptionsHelper menuHelper;
 
 	public TelaListaCadastrado(JMainFrame frame) {
 		this.frame = frame;
@@ -115,7 +77,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 
 		frame.setMenuItemClickListener(this);
 
-		menuHelper = new MenuOptionsHelper(this);
+		menuHelper = new OptionsHelper(this);
 
 		initialize();
 	}
@@ -144,7 +106,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		frame.repaint();
 
 		// add(panelList());
-		// add(panelEmptyList());
+		//add(panelEmptyList());
 	}
 
 	private void initialize() {
@@ -176,7 +138,6 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		// int xPosition = ((screenSize.width / 2) - width) + marginRight;
 		int xPosition = ((screenSize.width / 2) - width) - 10;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
@@ -258,8 +219,6 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		setupBusca();
 		updateInfoPanel(!alunoList.isEmpty());
 
-//		updateAlunoTotal();
-
 		return mainPanelList;
 	}
 
@@ -268,7 +227,6 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		// int xPosition = ((screenSize.width) - (width*2)) + width / 2;
 		int xPosition = (screenSize.width / 2) + 10;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
@@ -359,9 +317,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		int marginBottom = 50;
 		int width = 418;
 		int height = 580;
-		// int xPosition = ((screenSize.width) - (width*2)) + width / 2;
 		int xPosition = (screenSize.width / 2) + 10;
-		// int xPosition = (screenSize.width) - (width + width / 2) - marginLeft;
 		int yPosition = (screenSize.height / 2) - (height / 2) - marginBottom;
 
 		notFoundPanel = new JPanelCard();
@@ -482,8 +438,9 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 		panelEmptyList.add(emptyListMessage);
 
 		btnCadastrar = new StyledButton("Cadastrar aluno");
-		btnCadastrar.setBounds((screenSize.width / 2) - (250 / 2),
-				(screenSize.height / 2) + emptyListMessage.getHeight() * 3, 250, 40);
+		int btnX = (screenSize.width / 2) - (250 / 2);
+		int btnY = (screenSize.height / 2) + emptyListMessage.getHeight() * 3;
+		btnCadastrar.setBounds(btnX, btnY, 250, 40);
 		btnCadastrar.setFocusPainted(false);
 		btnCadastrar.setFont(FormUtil.getFontBold(12));
 		panelEmptyList.add(btnCadastrar);
@@ -493,7 +450,7 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 				cadastrarClickListener.onClick(this);
 			}
 		});
-
+		
 		frame.updateMenuVisibility();
 		return panelEmptyList;
 	}
@@ -543,11 +500,13 @@ public class TelaListaCadastrado extends JPanel implements OnItemMenuClickListen
 			btnFirst.setBounds(w / 2 - 140, yP, 120, 40);
 			btnFirst.setBorderColor(new Color(253, 239, 211));
 			
+			
 			StyledButton btnLast = new StyledButton("Última", true);
 			btnLast.setFocusPainted(false);
 			btnLast.setButtonColor(Color.white);
 			btnLast.setBounds(w / 2, yP, 120, 40);
 			btnLast.setBorderColor(new Color(253, 239, 211));
+			btnLast.setEnabled(alunoList.size() > 1);
 			
 			btnFirst.addActionListener(e -> {
 				btnLast.setBorderColor(new Color(253, 239, 211));

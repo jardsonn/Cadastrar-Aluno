@@ -19,6 +19,13 @@ import br.uespi.cadastroaluno.model.PrimeiraUltimaMatricula;
 import br.uespi.cadastroaluno.ui.TelaListaCadastrado;
 import br.uespi.cadastroaluno.ui.components.JMainFrame;
 
+/**
+ *Essa classe contém as funções do menu opções na TelaListaCadastro.java
+ * 
+ * @author Jardson Costa
+ * @author João Pedro
+ * 
+ */
 
 public class OptionsHelper {
 
@@ -27,15 +34,20 @@ public class OptionsHelper {
 	private TelaListaCadastrado jpanel;
 	private JMainFrame mainJFrame;
 
-	
+	/**Construtor para inicialização dos atributos
+	 * 
+	 * @param jpanel TelaListaCadastro - JPanel com métodos importantes
+	 */
 	public OptionsHelper(TelaListaCadastrado jpanel) {
 		this.jpanel = jpanel;
 		mainJFrame = jpanel.getMainFrame();
 
 	}
-
-	
-
+	/**
+	 * Método para excluir o último aluno
+	 * 
+	 * @param obj Object - Pega referência da classe para obter o caminho do ícone e excluir 
+	 */
 	public void deleteLastStudent(Object obj) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		DefaultListModel<Aluno> model = (DefaultListModel<Aluno>) jpanel.getStudentsList().getModel();
@@ -50,8 +62,9 @@ public class OptionsHelper {
 
 	}
 	
-	
-	
+	/**
+	 * Método para obter a primeira e a última matrícula
+	 */ 	
 	public PrimeiraUltimaMatricula getRegistrationFirstLast() {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		Aluno firstStudent = mainJFrame.getAlunoList().get(0);
@@ -60,12 +73,20 @@ public class OptionsHelper {
 				.setUltimo(lastStudent.getMatricula());
 	}
 
-	
+	/**
+	 * Método para obter o terceiro aluno da lista
+	 */
 	public Aluno getThirdStudent() {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		return studentList.get(2);
 	}
 
+	/**
+	 * Método para salvar um aluno em arquivo .csv
+	 * 
+	 * @param aluno Aluno - aluno para ser salvo
+	 * @param fileName String - nome do arquivo
+	 */
 	
 	public void saveStudent(Aluno aluno, String fileName) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
@@ -74,13 +95,23 @@ public class OptionsHelper {
 		saveAllStudents(oneStudent, fileName);
 	}
 
-	
+	/**
+	 * Método para salvar uma lista de alunos em arquivo .csv
+	 * 
+	 * @param fileName String - nome do arquivo
+	 */
 	public void saveAllStudents(String fileName) {
 		List<Aluno> studentList = mainJFrame.getAlunoList();
 		saveAllStudents(studentList, fileName);
 	}
 
-	
+	/**
+	 * Método para salvar uma lista de alunos em arquivo .csv
+	 * 
+	 * @param studentList List<Aluno> - Lista de alunos a ser salvo
+	 * @param studentList List<Aluno> - Lista de alunos a ser salvo
+	 * @param fileName String - nome do arquivo
+	 */
 	public void saveAllStudents(List<Aluno> studentList, String fileName) {
 		String path = fileName.concat(".csv");
 		File studentFolder = new File(SAVED_FILES);
@@ -133,7 +164,13 @@ public class OptionsHelper {
 		}
 	}
 
-	
+	/**
+	 * Método para obter alunos que estão no arquivo .csv
+	 * 
+	 * @return List<Aluno> Lista de alunos
+	 * @throws IOException Se a operação de ler arquivo for interrompida
+	 * 
+	 */
 	public List<Aluno> getStudentsFromFile() {
 		List<Aluno> list = new ArrayList<Aluno>();
 		JFileChooser fileChooser = new JFileChooser();
@@ -170,7 +207,12 @@ public class OptionsHelper {
 
 	}
 
-	
+	/**	 
+	 * Metódo para transformar um Aluno em uma linha válida/formatada do .csv
+	 * 
+	 * @param aluno Aluno - aluno a ser formatado
+	 * @return Linha do .csv formatada
+	 */
 	private String formatLineCSV(Aluno aluno) {
 		return new StringBuilder().append(aluno.getMatricula()).append(",").append(aluno.getNome()).append(",")
 				.append(aluno.getIdade()).append(",")
@@ -179,7 +221,12 @@ public class OptionsHelper {
 	}
 	
 	
-	
+	/**
+	 * Método para transformar inputStream em uma lista de alunos
+	 * @param inputStream InputStream - Objeto de entrada
+	 * @return List<Aluno> - Lista de alunos
+	 * @throws IOException - Se o arquivo do objeto de entrada conter atributos inválidos
+	 */
 	private List<Aluno> streamToStudent(InputStream inputStream) throws IOException {
 		List<Aluno> list = new ArrayList<Aluno>();
 		try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
@@ -209,7 +256,12 @@ public class OptionsHelper {
 		return list;
 	}
 
-	
+	/**
+	 * Método para validar os atributos do arquivo lido
+	 * 
+	 * @param attrs String[] - Atributos do arquivo .csv
+	 * @return int - Índice do atributo inválido
+	 */
 	private int validData(String[] attrs) {
 		int lenMat = attrs[0].trim().length();
 		int lenDate = attrs[3].trim().length();

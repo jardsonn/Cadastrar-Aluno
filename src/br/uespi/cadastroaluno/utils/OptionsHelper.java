@@ -120,10 +120,10 @@ public class OptionsHelper {
 		String msgSuccess;
 		if (studentList.size() == 1) {
 			msgError = "Infelizmente não foi possível salvar esse(a) aluno(a) em um arquivo!";
-			msgSuccess = "<html><body>Aluno(a) foi salvo(a) com sucesso.<br/>Salvo em: <b>%s</b></html></body>";
+			msgSuccess = "<html><body>Aluno(a) foi salvo(a) com sucesso.<br/>Salvo em: <b>%s</b></body></html>";
 		} else {
 			msgError = "Infelizmente não foi possível salvar essa lista de alunos em um arquivo!";
-			msgSuccess = "<html><body>Os alunos foram salvos com sucesso.<br/>Salvo em: <b>%s</b></html></body>";
+			msgSuccess = "<html><body>Os alunos foram salvos com sucesso.<br/>Salvo em: <b>%s</b></body></html>";
 		}
 
 		if (studentList.isEmpty()) {

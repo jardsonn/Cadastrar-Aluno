@@ -39,3 +39,17 @@ deve ser do tipo date e armazenar no nosso formato dd/mm/yyyy, telefone, CPF,. D
  **OBS: Esse trabalho valerá a terceira nota 10,0. O trabalho pode ser feito em equipe de no máximo dois integrantes.**<br/> 
  **OBS: Os trabalhos que forem copias de outros, terá a nota automaticamente 0,0.**<br/> 
  **OBS: É obrigatório uso do Swing ou Java FX. Use formulários, menus, caixa de mensagens, confirmação,caixa de entrada de dados etc. Quando mais recurso utilizar melhor.**
+
+## Screenshots
+
+#### Tela inicial
+<img src="./screenshots/screenshot_1.png" alt="Tela inicial"/>
+
+#### Tela de cadastro
+<img src="./screenshots/screenshot_2.png" alt="Tela de cadastro"/>
+
+#### Tela de cadastro com sucesso
+<img src="./screenshots/screenshot_3.png" alt="Tela de cadastro com sucesso"/>
+
+#### Tela de alunos cadastrados
+<img src="./screenshots/screenshot_4.png" alt="Tela de alunos cadastrados"/>

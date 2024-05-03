@@ -295,7 +295,7 @@ public class TelaDeCadastro extends JPanel implements ActionListener {
 		clearText();
 
 		FormUtil.showSuccessMessage(this, "Cadastrado com sucesso!",
-				String.format("<html><body><b>%s</b> foi cadastrado(a) com sucesso!</html></body>", aluno.getNome()));
+				String.format("<html><body><b>%s</b> foi cadastrado(a) com sucesso!</body></html>", aluno.getNome()));
 	}
 
 	private void addAluno(Aluno aluno) {
